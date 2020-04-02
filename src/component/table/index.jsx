@@ -29,7 +29,6 @@ class NoticeTable extends React.Component {
     })
   }
   del = (id) => {
-    debugger
     this.noticeServie.del(id, (err, ret) => {
       this.list()
     })
@@ -46,7 +45,7 @@ class NoticeTable extends React.Component {
         case 2:
           return "每星期"
         case 3:
-          return "每星期"
+          return "每月"
       }
     }
     let columns = [
