@@ -1,11 +1,17 @@
 import React, { Component } from "react";
 import { Layout } from "antd";
 import DidaHeader from "../../component/head";
-import DidaTable from "../../component/table";
+import NoticeTable from "../../component/table";
+import NoticeService from "../../service/NoticeService"
 const { Header, Footer, Content } = Layout;
 
 class Home extends Component {
+  
   render() {
+    function insert(){
+       let noticeService =  new NoticeService()
+       noticeService.insert()
+    }
     return (
       <div>
         <Layout>
@@ -13,7 +19,7 @@ class Home extends Component {
             <DidaHeader></DidaHeader>
           </Header>
           <Content>
-               <DidaTable></DidaTable>
+               <NoticeTable></NoticeTable>
           </Content>
         </Layout>
       </div>

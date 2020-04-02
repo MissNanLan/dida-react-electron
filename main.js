@@ -22,7 +22,7 @@ function createWindow () {
         title:"滴答" 
     };
     mainWindow = new BrowserWindow(windowOptions);
-    mainWindow.loadURL("http://localhost:3000/");
+    mainWindow.loadURL("http://localhost:3001/");
     // 加载应用----react 打包
     // mainWindow.loadURL(path.join('file://', __dirname, '/build/index.html'));
     //接收渲染进程的信息
