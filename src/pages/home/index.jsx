@@ -18,7 +18,7 @@ class Home extends Component {
           <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
             <Row>
               <Col span={6} >
-                <div style={{color:'#fff'}}>第一稽查局检查一科</div>
+                <div style={{color:'#fff',fontWeight:'bold'}}>第一稽查局检查一科</div>
                </Col>
               <Col span={18} >
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>

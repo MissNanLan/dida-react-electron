@@ -1,10 +1,11 @@
 import React from "react";
 import { Table, Button } from "antd";
+import moment from 'moment'
 import DidaDialog from './dialog'
 import NoticeService from "../../service/NoticeService"
 
 class NoticeTable extends React.Component {
-  noticeServie = new NoticeService()
+  noticeServie = NoticeService.getInstance()
   constructor(props) {
     super(props);
     this.state = {
@@ -52,7 +53,8 @@ class NoticeTable extends React.Component {
       {
         title: "提醒时间",
         dataIndex: "noticeTime",
-        key: "noticeTime"
+        key: "noticeTime",
+        render:(text)=>(moment(text).format("YYYY年MM月DD日 HH:mm:ss"))
       },
       {
         title: "提醒方式",
