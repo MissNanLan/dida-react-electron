@@ -1,14 +1,14 @@
 import nedb from 'nedb';
 import schedule from 'node-schedule'
+const path = require('path')
 
 const noticeDb = new nedb({
     filename: '/opt/data/dida_notice.db',
     autoload: true
 });
 
-const InsertParam = {
-    "noticeTime": new Date(),
-    "nextNoticeTime": new Date(),
+const NoticeMock = {
+    "noticeTime": new Date('2020-04-03 16:24:00'),
     "noticeTitle": "提醒标题",
     "noticeContent": "提醒内容",
     "noticeType": 0,
@@ -16,6 +16,7 @@ const InsertParam = {
     "status": 1,
     "isDel": false
 }
+const useMock = true;
 
 
 class NoticeService {
@@ -48,10 +49,11 @@ class NoticeService {
     _convertNotice(notice) {
         let rule = this._convertDate2Corn(notice.noticeTime, notice.noticeType);
         if (!rule) return
+        console.log(rule)
         let job = schedule.scheduleJob(rule, () => {
             this._doNotice(notice)
         })
-        this._jobStore[notice._id] = job
+        this._jobStore["" + notice._id] = job
     }
     _convertDate2Corn(date, type) {
         let week = date.getDay()
@@ -76,20 +78,45 @@ class NoticeService {
 
     // 具体通知内容
     _doNotice = (notice) => {
-        alert("标题：" + notice.noticeTitle + "内容:" + notice.noticeContent)
+        let _path = path.join(__dirname, '/programming.png')
+        const notification = {
+            title: '附带图像的通知',
+            body: '短消息附带自定义图片',
+            icon: _path
+        }
+        let myNotification = new Notification(notification.title, notification)
+        myNotification.cancel()
+        myNotification.onclick = (e) => {
+            console.log(e)
+        }
+        // alert("标题：" + notice.noticeTitle + "内容:" + notice.noticeContent)
     }
 
-    insert = (insertParam, cb) => {
-        noticeDb.insert(InsertParam, cb)
+    insert = (notice, cb) => {
+        let data = notice
+        if (useMock) {
+            data = NoticeMock
+        }
+        noticeDb.insert(data, (err, doc) => {
+            this._convertNotice(doc)
+            cb(err, doc)
+        })
     }
-    list = (pageNum, pageSize, cb) => {
+    list = (cb) => {
         noticeDb.find().exec(cb)
     }
     del = (id, cb) => {
         noticeDb.remove({ "_id": id }, cb)
+        let job = this._jobStore["" + id]
+        if (job) {
+            job.cancel()
+        }
     }
     update = (notice) => {
 
+    }
+    notice = () => {
+        this._doNotice()
     }
 }
 

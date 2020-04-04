@@ -14,16 +14,16 @@ class NoticeTable extends React.Component {
   }
 
   componentDidMount() {
-    this.list(1, 10)
+    this.list()
   }
 
   add = () => {
     this.noticeServie.insert(1, (err, document) => {
       this.list()
     })
-  };
-  list = (pageNum = 1, pageSize = 10) => {
-    this.noticeServie.list(pageNum, pageSize, (err, ret) => {
+  }
+  list = () => {
+    this.noticeServie.list((err, ret) => {
       this.setState({
         dataSource: ret
       })
@@ -33,6 +33,9 @@ class NoticeTable extends React.Component {
     this.noticeServie.del(id, (err, ret) => {
       this.list()
     })
+  }
+  notice=()=>{
+    this.noticeServie.notice()
   }
 
   render() {
@@ -83,6 +86,9 @@ class NoticeTable extends React.Component {
         <div style={{ marginBottom: 16 }}>
           <Button type="primary" onClick={this.add}>
             增加
+          </Button>
+          <Button type="primary" onClick={this.notice}>
+            弹窗
           </Button>
         </div>
         {/* <DidaDialog></DidaDialog> */}
