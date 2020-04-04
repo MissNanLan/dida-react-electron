@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "antd": "^4.1.0",
+    "is-electron": "^2.2.0",
     "moment": "^2.24.0",
     "nedb": "^1.8.0",
     "node-schedule": "^1.3.2",
@@ -18,7 +19,7 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
-    "electron": "electron . --debug",
+    "electron": "electron . --debug ",
     "dev": "electron . --debug | set PORT=9000 && react-scripts start",
     "react": "set PORT=9000 && react-scripts start",
     "start": "react-scripts start",

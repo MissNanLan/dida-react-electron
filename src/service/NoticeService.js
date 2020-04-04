@@ -1,9 +1,15 @@
 import nedb from 'nedb';
-import schedule from 'node-schedule'
+import schedule from 'node-schedule';
+import dialog from'./NoticeInfromations'
+const {
+    remote
+} = window.electron;
+const BrowserWindow = remote.BrowserWindow;
+const ipcRenderer = window.electron.ipcRenderer
 const path = require('path')
 
 const noticeDb = new nedb({
-    filename: '/opt/data/dida_notice.db',
+    filename: path.join(__dirname, '/data/dida_notice.db'),
     autoload: true
 });
 
@@ -38,7 +44,10 @@ class NoticeService {
     }
     // 查询所有有效的通知
     _queryAllValidNotice = () => {
-        noticeDb.find({ status: 1, isDel: false }).exec((err, notices) => {
+        noticeDb.find({
+            status: 1,
+            isDel: false
+        }).exec((err, notices) => {
             if (err) return
             notices.forEach(notice => {
                 this._convertNotice(notice)
@@ -63,13 +72,13 @@ class NoticeService {
         let m = date.getMinutes()
         let s = date.getSeconds()
         switch (type) {
-            case 0:// 一次
+            case 0: // 一次
                 return date
-            case 1:// 每天
+            case 1: // 每天
                 return `${s} ${m} ${h} ${d}/1 * ?`
-            case 2:// 每周
+            case 2: // 每周
                 return `${s} ${m} ${h} ? * ${week + 1}`
-            case 3:// 每月
+            case 3: // 每月
                 return `${s} ${m} ${h} ${d} ${M}/1 ?`
             default:
                 return '';
@@ -78,18 +87,60 @@ class NoticeService {
 
     // 具体通知内容
     _doNotice = (notice) => {
-        let _path = path.join(__dirname, '/programming.png')
-        const notification = {
-            title: '附带图像的通知',
-            body: '短消息附带自定义图片',
-            icon: _path
-        }
-        let myNotification = new Notification(notification.title, notification)
-        myNotification.cancel()
-        myNotification.onclick = (e) => {
-            console.log(e)
-        }
+        // let _path = path.join(__dirname, '/programming.png')
+        // const notification = {
+        //     title: '附带图像的通知',
+        //     body: '短消息附带自定义图片',
+        //     icon: _path
+        // }
+        // let myNotification = new Notification(notification.title, notification)
+        // myNotification.onclick = (e) => {
+        //     myNotification.close()
+        //     console.log(e)
+        // }
         // alert("标题：" + notice.noticeTitle + "内容:" + notice.noticeContent)
+        // remote.dialog.showMessageBox({
+        //     type:'info',
+        //     title:'提示信息',
+        //     message:'内容',
+        //     buttons:['ok','no']
+
+        // },(index)=>{
+        //     console.log(index)
+        // })
+        // const options = {
+        //     type: 'info',
+        //     title: '信息',
+        //     message: "这是一个信息对话框. 很不错吧？",
+        //     buttons: ['是', '否']
+        //   }
+        //   remote.dialog.showMessageBox(options, (index) => {
+        //     console.log(index)
+        //     // event.sender.send('information-dialog-selection', index)
+        //   })
+        // let win = new BrowserWindow({
+        //     backgroundColor: '#2e2c29'
+        // })
+        
+        // win.loadURL('https://github.com')
+        // console.log(ipcRenderer.sendSync('synchronous-message', 'ping')); // prints "pong"
+
+        // ipcRenderer.on('asynchronous-reply', function(event, arg) {
+        //   console.log(arg); // prints "pong"
+        // });
+        // ipcRenderer.send('asynchronous-message', 'ping');
+        // debugger
+        // ipcRenderer.send('open-information-dialog')
+        // ipcRenderer.on('open-information-dialog', (event, index) => {
+        //    let newwin = new BrowserWindow({
+        //         width: 600, 
+        //         height: 400,
+        //         frame:false,
+        //         // parent: mainWindow, //win是主窗口
+        //     })
+        //     newwin.loadURL("http://localhost:9000/");
+        //   })
+        dialog()
     }
 
     insert = (notice, cb) => {
@@ -106,7 +157,9 @@ class NoticeService {
         noticeDb.find().exec(cb)
     }
     del = (id, cb) => {
-        noticeDb.remove({ "_id": id }, cb)
+        noticeDb.remove({
+            "_id": id
+        }, cb)
         let job = this._jobStore["" + id]
         if (job) {
             job.cancel()

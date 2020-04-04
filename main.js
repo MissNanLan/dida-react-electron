@@ -1,9 +1,18 @@
-const { app, BrowserWindow,dialog } = require('electron');
-const path = require('path');
+const electron = require('electron')
+const { app, BrowserWindow, dialog } = electron;
+const ipc = electron.ipcMain;
+const path = require('path')
+
+const Menu = electron.Menu
+const Tray = electron.Tray
+
 let mainWindow = null;
+let appTray = null;
+
 //判断命令行脚本的第二参数是否含--debug
 const debug = /--debug/.test(process.argv[2]);
-function makeSingleInstance () {
+
+function makeSingleInstance() {
     if (process.mas) return;
     app.requestSingleInstanceLock();
     app.on('second-instance', () => {
@@ -13,27 +22,38 @@ function makeSingleInstance () {
         }
     })
 }
-function createWindow () {
+
+function createWindow() {
     const windowOptions = {
         width: 800,
         height: 600,
-        frame:true,
-        autoHideMenuBar:true,
-        title:"滴答" 
+        center: true,
+        frame: true,
+        resizable: false,
+        maximizable: false,
+        autoHideMenuBar: true,
+        title: "滴答提醒",
+        skipTaskbar: false,
+        webPreferences: {
+            nodeIntegration: false,
+            preload: __dirname + '/preload.js'
+        }
     };
     mainWindow = new BrowserWindow(windowOptions);
-    mainWindow.loadURL("http://localhost:3001/");
+    mainWindow.loadURL("http://localhost:9000/");
     // 加载应用----react 打包
     // mainWindow.loadURL(path.join('file://', __dirname, '/build/index.html'));
+    // 开始或停止显示窗口来获得用户的关注
+    mainWindow.flashFrame(true);
     //接收渲染进程的信息
-    const ipc = require('electron').ipcMain;
+
     ipc.on('min', function () {
         mainWindow.minimize();
     });
-    ipc.on('max', function () {
-        mainWindow.maximize();
-    });
-    ipc.on("login",function () {
+    // ipc.on('max', function () {
+    //     mainWindow.maximize();
+    // });
+    ipc.on("login", function () {
         mainWindow.maximize();
     });
     //如果是--debug 打开开发者工具，窗口最大化，
@@ -42,27 +62,36 @@ function createWindow () {
         require('devtron').install();
     }
 
-    // mainWindow.on('closed', () => {
-    //     mainWindow = null
-    // })
     mainWindow.on('close', (e) => {
-        dialog.showMessageBox({
-          type: 'info',
-          title: 'Information',
-          defaultId: 0,
-          message: '确定要关闭吗？',
-          buttons: ['最小化','直接退出']
-        },(index)=>{
-          if(index===0){
-            e.preventDefault();		//阻止默认行为，一定要有
-            mainWindow.minimize();	//调用 最小化实例方法
-          } else {
-            mainWindow = null;
-            //app.quit();	//不要用quit();试了会弹两次
-            app.exit();		//exit()直接关闭客户端，不会执行quit();
-          }
-        }) 
-      });
+        e.preventDefault();
+        mainWindow.hide()
+    })
+    mainWindow.on('closed', (e) => {
+        mainWindow = null
+    })
+    // mainWindow.on('close', (e) => {
+    //     mainWindow.minimize();
+    // });
+    ipc.on('asynchronous-message', function (event, arg) {
+        console.log(arg); // prints "ping"
+        event.sender.send('asynchronous-reply', 'pong');
+    });
+
+    ipc.on('synchronous-message', function (event, arg) {
+        console.log(arg); // prints "ping"
+        event.returnValue = 'pong';
+    });
+    // 托盘图标
+    appTray = new Tray(path.join(__dirname, '/public/favicon.ico'))
+    const trayMenu = Menu.buildFromTemplate([
+        {label:'退出',click:()=>{app.quit()}}
+    ])
+    appTray.setContextMenu(trayMenu)
+    appTray.setToolTip('滴答提醒')
+    appTray.on('click',()=>{
+        mainWindow.show();
+    })
+    
 }
 makeSingleInstance();
 //app主进程的事件和方法
