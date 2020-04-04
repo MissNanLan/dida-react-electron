@@ -42,7 +42,7 @@ function createWindow() {
         }
     };
     mainWindow = new BrowserWindow(windowOptions);
-    mainWindow.loadURL("http://localhost:9000/");
+    mainWindow.loadURL("http://localhost:3000/");
     // 加载应用----react 打包
     // mainWindow.loadURL(path.join('file://', __dirname, '/build/index.html'));
     // 开始或停止显示窗口来获得用户的关注
