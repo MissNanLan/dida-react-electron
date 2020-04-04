@@ -4,7 +4,7 @@ import moment from 'moment'
 import DidaDialog from './dialog'
 import NoticeService from "../../service/NoticeService"
 
-class NoticeTable extends React.Component {
+class TimingRemind extends React.Component {
   noticeServie = NoticeService.getInstance()
   constructor(props) {
     super(props);
@@ -98,4 +98,4 @@ class NoticeTable extends React.Component {
   }
 }
 
-export default NoticeTable;
+export default TimingRemind;

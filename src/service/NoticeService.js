@@ -85,10 +85,10 @@ class NoticeService {
             icon: _path
         }
         let myNotification = new Notification(notification.title, notification)
-        myNotification.cancel()
-        myNotification.onclick = (e) => {
-            console.log(e)
-        }
+        // myNotification.cancel()
+        // myNotification.onclick = (e) => {
+        //     console.log(e)
+        // }
         // alert("标题：" + notice.noticeTitle + "内容:" + notice.noticeContent)
     }
 
