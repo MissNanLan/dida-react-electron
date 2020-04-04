@@ -1,7 +1,4 @@
-const {
-    app,
-    remote
-} = window.electron
+const {app,remote} = window.electron
 const BrowserWindow = remote.BrowserWindow;
 const ipcRenderer = window.electron.ipcRenderer
 

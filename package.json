@@ -19,8 +19,8 @@
     "react-scripts": "3.4.1"
   },
   "scripts": {
-    "electron": "electron . --debug ",
-    "dev": "electron . --debug | set PORT=9000 && react-scripts start",
+    "electron": "electron . ",
+    "dev": "electron . --debug ",
     "react": "set PORT=9000 && react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -1,38 +1,27 @@
 import React, { Component } from "react";
-import { Layout, Menu,Row, Col } from "antd";
+import { Layout } from "antd";
 import DidaHeader from "../../component/head";
-import NoticeTable from "../../component/table";
-import NoticeService from "../../service/NoticeService"
+import NoticeService from "../../service/NoticeService";
 const { Header, Footer, Content } = Layout;
 
-class Home extends Component {
-
+class Home extends React.PureComponent {
   render() {
-    function insert() {
-      let noticeService = new NoticeService()
-      noticeService.insert()
-    }
+    console.log(this.props);
     return (
       <div>
         <Layout>
-          <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-            <Row>
-              <Col span={6} >
-                <div style={{color:'#fff',fontWeight:'bold'}}>第一稽查局检查一科</div>
-               </Col>
-              <Col span={18} >
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-                  <Menu.Item key="1">定时提醒</Menu.Item>
-                  <Menu.Item key="2">档案管理</Menu.Item>
-                </Menu>
-              </Col>
-            </Row>
-
-
-            {/* <DidaHeader></DidaHeader> */}
+          <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
+            <DidaHeader props={this.props} history={this.props.history}></DidaHeader>
           </Header>
-          <Content className="site-layout" style={{ padding: '0 25px', marginTop: 64, height: '600px', margin: '90px 0' }}>
-            <NoticeTable></NoticeTable>
+
+          <Content className="site-layout" style={{
+            padding: "0 25px",
+            marginTop: 64,
+            height: "600px",
+            margin: "90px 0",
+          }}
+          >
+            {this.props.children}
           </Content>
         </Layout>
       </div>

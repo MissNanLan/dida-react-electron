@@ -1,9 +1,9 @@
 import nedb from 'nedb';
 import schedule from 'node-schedule';
 import dialog from'./NoticeInfromations'
-const {
-    remote
-} = window.electron;
+import DialogService from './DialogService'
+
+const {remote} = window.electron;
 const BrowserWindow = remote.BrowserWindow;
 const ipcRenderer = window.electron.ipcRenderer
 const path = require('path')
@@ -87,6 +87,7 @@ class NoticeService {
 
     // 具体通知内容
     _doNotice = (notice) => {
+        DialogService.windowDialog()
         // let _path = path.join(__dirname, '/programming.png')
         // const notification = {
         //     title: '附带图像的通知',
@@ -140,7 +141,7 @@ class NoticeService {
         //     })
         //     newwin.loadURL("http://localhost:9000/");
         //   })
-        dialog()
+        // dialog()
     }
 
     insert = (notice, cb) => {

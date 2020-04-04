@@ -1,6 +1,7 @@
 const electron = require('electron')
 const { app, BrowserWindow, dialog } = electron;
 const ipc = electron.ipcMain;
+const screen = electron.screen
 const path = require('path')
 
 const Menu = electron.Menu
@@ -24,9 +25,10 @@ function makeSingleInstance() {
 }
 
 function createWindow() {
+    let size = screen.getPrimaryDisplay().workAreaSize
     const windowOptions = {
-        width: 800,
-        height: 600,
+        width: parseInt(size.width * 0.45),
+        height: parseInt(size.height * 0.58),
         center: true,
         frame: true,
         resizable: false,
@@ -84,7 +86,9 @@ function createWindow() {
     // 托盘图标
     appTray = new Tray(path.join(__dirname, '/public/favicon.ico'))
     const trayMenu = Menu.buildFromTemplate([
-        {label:'退出',click:()=>{app.quit()}}
+        {label:'退出',click:()=>{
+            app.quit()
+        }}
     ])
     appTray.setContextMenu(trayMenu)
     appTray.setToolTip('滴答提醒')
