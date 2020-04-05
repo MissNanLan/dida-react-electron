@@ -17,8 +17,11 @@ function App() {
     <Router>
       <Route path="/" render={() => (
         <Home>
-          <Route path="/" exact component={TimingRemind} />
-          <Route path="/caseManage" exact component={CaseManage} />
+          <Switch>
+            <Route path="/" exact component={TimingRemind} />
+            <Route path="/caseManage" exact component={CaseManage} />
+            <Redirect from="/*" to="/"></Redirect>
+          </Switch>
         </Home>
       )}
       />

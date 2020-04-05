@@ -1,5 +1,5 @@
-const { app, remote } = window.electron
-const screen = window.electron.screen
+const {  remote } = window.electron
+const path = require('path')
 const BrowserWindow = remote.BrowserWindow;
 
 
@@ -17,7 +17,9 @@ class DialogService {
             skipTaskbar: false,
         };
         let noticeWin = new BrowserWindow(windowOptions);
-        noticeWin.loadURL("https://www.baidu.com/");
+      //  noticeWin.loadURL("https://www.baidu.com/");
+        noticeWin.loadURL(path.join('file://', __dirname, '/build/index.html'));
+        noticeWin.loadURL("http://localhost:3000/#/caseManage")
     }
 }
 

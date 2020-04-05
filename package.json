@@ -21,7 +21,7 @@
   "scripts": {
     "electron": "electron . ",
     "dev": "electron . --debug ",
-    "react": "set PORT=9000 && react-scripts start",
+    "react": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -6,7 +6,6 @@ const { Header, Footer, Content } = Layout;
 
 class Home extends React.PureComponent {
   render() {
-    console.log(this.props);
     return (
       <div>
         <Layout>
