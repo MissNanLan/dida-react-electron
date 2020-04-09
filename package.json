@@ -58,6 +58,7 @@
       "dist/",
       "node_modules/",
       "app.html",
+      "static/",
       "main.prod.js",
       "main.prod.js.map",
       "package.json"
