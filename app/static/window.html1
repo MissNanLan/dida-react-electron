@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>提醒</title>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      background: #ffbb96;
+    }
+
+    .myHeader {
+      padding-left: 100px;
+      background-color: #f9fafc;
+      height: 64px;
+      line-height: 64px;
+      box-shadow: 3px 3px 4px 0 rgba(0, 0, 0, .05);
+      border-bottom: 1px solid #e9e9e9;
+      position: relative;
+    }
+
+    .close {
+      color: #389e0d;
+      font-size: 16px;
+      font-weight: 400;
+      position: absolute;
+      right: 30px;
+    }
+  </style>
+  <!-- <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script> -->
+  
+</head>
+
+<body>
+  <header class='myHeader'>
+    <a class="close" href="javascript:window.close()">关闭窗口</a>
+  </header>
+
+  <h2>Add React in One Minute</h2>
+    <p>This page demonstrates using React with no build tooling.</p>
+    <p>React is loaded as a script tag.</p>
+
+    <!-- We will put our React component inside this div. -->
+    <!-- <div id="like_button_container"></div> -->
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <div id="like_button_container"></div>
+    <script src="window.js"></script>
+</body>
+
+</html>

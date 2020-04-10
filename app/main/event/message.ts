@@ -14,8 +14,7 @@ export default class MessageBuilder{
         ipcMain.on('create-notice-window',(event,data)=>{
             let win:BrowserWindow | null= new BrowserWindow({
                 width: 800,
-                height: 600,
-                frame: false
+                height: 600
             })
             win.on('close', () => { win = null })
             win.loadURL(`file://${__dirname}/static/window.html`);
