@@ -8,8 +8,8 @@ export const NavWrapper = styled.div `
     z-index: 99;
     display: flex;
     justify-content: space-around;
-    height: 60px;
-    line-height: 60px;
+    height: 64px;
+    line-height: 64px;
     background-color: #fff;
    .title{
         color: #61BFAD;
