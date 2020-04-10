@@ -8,7 +8,7 @@ const { ipcRenderer } = electron;
 
 export default class Home extends React.Component {
   createNoticeWindow = () => {
-    ipcRenderer.send('create-notice-window');
+    ipcRenderer.send('create-notice-window','this is message');
   };
 
   render() {

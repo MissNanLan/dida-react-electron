@@ -59,6 +59,7 @@
       "node_modules/",
       "app.html",
       "static/",
+      "service/",
       "main.prod.js",
       "main.prod.js.map",
       "package.json"
