@@ -41,7 +41,7 @@ export default class Home extends React.Component {
 
     return (
       <div className={styles.container} data-tid="container">
-        <Button onClick={this.createNoticeWindow}>打开窗口</Button>
+        {/* <Button onClick={this.createNoticeWindow}>打开窗口</Button> */}
         <Table dataSource={data}>
           <ColumnGroup title="Name">
             <Column title="First Name" dataIndex="firstName" key="firstName" />
