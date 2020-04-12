@@ -1,79 +1,145 @@
 import React from 'react';
-import { Table, Tag, Button } from 'antd';
+import { Table, Tag, Button,Modal } from 'antd';
 import electron from 'electron';
+import moment from 'moment'
 import styles from './Home.css';
+import NoticeService from "../main_service/NoticeService"
 
-const { Column, ColumnGroup } = Table;
 const { ipcRenderer } = electron;
 
-export default class Home extends React.Component {
+interface IState {
+  dataSource: Array<any>,
+  visible?:boolean,
+  confirmLoading?:boolean
+}
+
+export default class Home extends React.Component<{}, IState> {
+ 
+  // noticeServie = new NoticeService()
+  // noticeServie = null
+
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: [],
+      visible:false,
+      confirmLoading:false
+    };
+  }
+  componentDidMount() {
+    this.list()
+  }
   createNoticeWindow = () => {
     ipcRenderer.send('create-notice-window','this is message');
   };
 
+  add = () => {
+    // this.noticeServie.insert(1, (err, document) => {
+    //   this.list()
+    // })
+    this.setState({visible:true})
+  }
+  list = () => {
+    // this.noticeServie.list((err, ret) => {
+    //   this.setState({
+    //     dataSource: ret
+    //   })
+    // })
+  }
+  del = (id) => {
+    // this.noticeServie.del(id, (err, ret) => {
+    //   this.list()
+    // })
+  }
+  notice=()=>{
+    // this.noticeServie.notice()
+  }
+  handleOk=()=>{
+    this.setState({
+      confirmLoading:true
+    })
+
+    this.setState({
+      confirmLoading:false,
+      visible:false
+     
+    })
+    
+  }
+  handleCancel=()=>{
+    this.setState({visible:false})
+  }
+
   render() {
-    const data = [
+    const { dataSource ,visible,confirmLoading} = this.state
+    let delNoticeType = (noticeType) => {
+      switch (noticeType) {
+        case 0:
+          return "一次"
+        case 1:
+          return "每天"
+        case 2:
+          return "每星期"
+        case 3:
+          return "每月"
+      }
+    }
+    let columns = [
       {
-        key: '1',
-        firstName: 'John',
-        lastName: 'Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer']
+        title: "提醒时间",
+        dataIndex: "noticeTime",
+        key: "noticeTime",
+        render:(text)=>(moment(text).format("YYYY年MM月DD日 HH:mm:ss"))
       },
       {
-        key: '2',
-        firstName: 'Jim',
-        lastName: 'Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser']
+        title: "提醒方式",
+        dataIndex: "noticeType",
+        key: "noticeType",
+        render: (noticeType) => (<span>{delNoticeType(noticeType)}</span>)
       },
       {
-        key: '3',
-        firstName: 'Joe',
-        lastName: 'Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher']
+        title: "提醒标题",
+        dataIndex: "noticeTitle",
+        key: "noticeTitle"
+      }, {
+        title: "操作",
+        dataIndex: "_id",
+        key: "_id",
+        render: (text, record) => (
+          <span>
+            <a style={{ marginRight: 16 }}>编辑</a>
+            <a onClick={()=>this.del(record._id)}>删除</a>
+          </span>
+        )
       }
     ];
 
     return (
       <div className={styles.container} data-tid="container">
         {/* <Button onClick={this.createNoticeWindow}>打开窗口</Button> */}
-        <Table dataSource={data}>
-          <ColumnGroup title="Name">
-            <Column title="First Name" dataIndex="firstName" key="firstName" />
-            <Column title="Last Name" dataIndex="lastName" key="lastName" />
-          </ColumnGroup>
-          <Column title="Age" dataIndex="age" key="age" />
-          <Column title="Address" dataIndex="address" key="address" />
-          <Column
-            title="Tags"
-            dataIndex="tags"
-            key="tags"
-            render={tags => (
-              <span>
-                {tags.map(tag => (
-                  <Tag color="blue" key={tag}>
-                    {tag}
-                  </Tag>
-                ))}
-              </span>
-            )}
-          />
-          <Column
-            title="Action"
-            key="action"
-            render={(text, record) => (
-              <span>
-                <a style={{ marginRight: 16 }}>Invite {record.lastName}</a>
-                <a>Delete</a>
-              </span>
-            )}
-          />
-        </Table>
+        <div>
+        <div style={{ marginBottom: 16 }}>
+          <Button type="primary" onClick={this.add} style={{float:"right"}}>
+            增加 
+          </Button>
+          {/* <Button type="primary" onClick={this.notice}>
+            弹窗
+          </Button> */}
+        </div>
+        <Table columns={columns} dataSource={dataSource} />
+        <Modal
+          title="增加提醒事项"
+          visible={visible}
+          onOk={this.handleOk}
+          confirmLoading={confirmLoading}
+          onCancel={this.handleCancel}
+          okText="确认"
+          cancelText="取消"
+        >
+          <p>asfdasdfa</p>
+        </Modal>
+      </div>
       </div>
     );
   }
