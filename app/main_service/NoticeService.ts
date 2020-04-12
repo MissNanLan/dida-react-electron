@@ -1,17 +1,23 @@
 
 // import nedb from 'nedb';
+
 // import schedule from 'node-schedule';
 
-// const path = require('path')
+import electron from 'electron';
 
-// const noticeDb = new nedb({
-//     filename: path.join(__dirname, '/dida_notice.db'),
-//     autoload: true
-// });
+const noticeDb = electron.remote.getGlobal('noticeDb')
+
+interface INoticePO{
+    noticeTime: Date,
+    noticeTitle: string,
+    noticeContent: string,
+    noticeType: number,
+    closeTime: number,
+    status: number,
+    isDel: boolean
+}
 
 class NoticeService {
-
-    
     // constructor() {
     //     this._initSchedule()
     // }
@@ -65,26 +71,34 @@ class NoticeService {
     // _doNotice = (notice='') => {
     //     alert(111)
     // }
-    // insert = (notice, cb) => {
-    //     let data = notice
-      
-    //     noticeDb.insert(data, (err, doc) => {
-    //         this._convertNotice(doc)
-    //         cb(err, doc)
-    //     })
-    // }
-    // list = (cb) => {
-    //     noticeDb.find().exec(cb)
-    // }
-    // del = (id, cb) => {
-    //     noticeDb.remove({
-    //         "_id": id
-    //     }, cb)
-    //     let job = this._jobStore["" + id]
-    //     if (job) {
-    //         job.cancel()
-    //     }
-    // }
+    insert = async(document) => {
+       let  noticePO:INoticePO = {
+            noticeTime: new Date(),
+            noticeTitle: '',
+            noticeContent: '',
+            noticeType: 0,
+            closeTime: 20,
+            status: 1,
+            isDel: false
+        }
+        Object.assign(noticePO,document);
+        noticePO.noticeTime = document.noticeTime.toDate()
+        return await noticeDb.insert(noticePO)
+    }
+    // noticeDb:Datastore
+    constructor(){
+        
+    }
+    list = async () => {
+        // await noticeDb.remove({},{multi:true})
+      let dbDoc =  await noticeDb.find({})
+
+      return dbDoc
+
+    }
+    del = async(id) => {
+        await noticeDb.remove({"_id": id},{multi:false})
+    }
     // update = (notice) => {
 
     // }

@@ -1,23 +1,25 @@
 import React from 'react';
-import { Table, Tag, Button,Modal } from 'antd';
+import { Table, Tag, Button,Modal,Form,Input,DatePicker,Select,InputNumber,Tooltip} from 'antd';
 import electron from 'electron';
 import moment from 'moment'
 import styles from './Home.css';
 import NoticeService from "../main_service/NoticeService"
 
+
 const { ipcRenderer } = electron;
 
 interface IState {
-  dataSource: Array<any>,
+  dataSource: any,
   visible?:boolean,
   confirmLoading?:boolean
 }
 
-export default class Home extends React.Component<{}, IState> {
- 
-  // noticeServie = new NoticeService()
-  // noticeServie = null
 
+
+export default class Home extends React.Component<{}, IState> {
+  noticeServie:NoticeService;
+  
+  formRef = React.createRef<any>();
 
   constructor(props) {
     super(props);
@@ -26,6 +28,7 @@ export default class Home extends React.Component<{}, IState> {
       visible:false,
       confirmLoading:false
     };
+    this.noticeServie = new NoticeService()
   }
   componentDidMount() {
     this.list()
@@ -33,37 +36,36 @@ export default class Home extends React.Component<{}, IState> {
   createNoticeWindow = () => {
     ipcRenderer.send('create-notice-window','this is message');
   };
+  add =()=>{
+    this.setState({
+      visible:true
+    })
+  }
+  list = async() => {
 
-  add = () => {
-    // this.noticeServie.insert(1, (err, document) => {
-    //   this.list()
-    // })
-    this.setState({visible:true})
+   let docs=  await this.noticeServie.list()
+    this.setState({
+      dataSource: docs
+    })
   }
-  list = () => {
-    // this.noticeServie.list((err, ret) => {
-    //   this.setState({
-    //     dataSource: ret
-    //   })
-    // })
-  }
-  del = (id) => {
-    // this.noticeServie.del(id, (err, ret) => {
-    //   this.list()
-    // })
+  del = async(id) => {
+    await this.noticeServie.del(id)
+    await this.list()
   }
   notice=()=>{
     // this.noticeServie.notice()
   }
-  handleOk=()=>{
+  handOk= async()=>{
     this.setState({
       confirmLoading:true
     })
-
+    let doc = this.formRef.current.getFieldsValue()
+    await this.noticeServie.insert(doc)
+    await this.list()
+    this.formRef.current.resetFields()
     this.setState({
       confirmLoading:false,
       visible:false
-     
     })
     
   }
@@ -83,6 +85,8 @@ export default class Home extends React.Component<{}, IState> {
           return "每星期"
         case 3:
           return "每月"
+        default:
+          return ""
       }
     }
     let columns = [
@@ -114,30 +118,99 @@ export default class Home extends React.Component<{}, IState> {
         )
       }
     ];
+    function disabledDate(current) {
+      // Can not select days before today and today
+      return current && current <= moment().endOf('day');
+    }
+    
 
     return (
       <div className={styles.container} data-tid="container">
         {/* <Button onClick={this.createNoticeWindow}>打开窗口</Button> */}
         <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.add} style={{float:"right"}}>
+          <Button type="primary" onClick={this.add} >
             增加 
           </Button>
-          {/* <Button type="primary" onClick={this.notice}>
-            弹窗
-          </Button> */}
         </div>
         <Table columns={columns} dataSource={dataSource} />
         <Modal
-          title="增加提醒事项"
+          title="增加提醒"
           visible={visible}
-          onOk={this.handleOk}
+          onOk={this.handOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           okText="确认"
           cancelText="取消"
         >
-          <p>asfdasdfa</p>
+          <div>
+            <Form
+              ref={this.formRef}
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
+              layout="horizontal"
+              initialValues={{ size: 'small',noticeTime:moment(),noticeType:0,closeTime:20,noticeTitle:'',noticeContent:''}}
+          
+            >
+              <Form.Item label={
+                    <span>
+                      {/* <Tooltip title="选择需要提醒的方式">
+                        <QuestionCircleOutlined />
+                      </Tooltip> */}
+                      &nbsp;提醒方式
+                    </span>
+                  }  name="noticeType"  >
+                  <Select>
+                    <Select.Option value={0}>一次</Select.Option>
+                    <Select.Option value={1}>每天</Select.Option>
+                    <Select.Option value={2}>每周</Select.Option>
+                    <Select.Option value={3}>每月</Select.Option>
+                  </Select>
+              </Form.Item>
+              <Form.Item 
+                label= "提醒日期" 
+                name="noticeTime" 
+                required 
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择提醒时间',
+                  },
+                ]}
+              >
+                <DatePicker
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabledDate={disabledDate}
+                  showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                  showToday={true}
+                  style={{width:'100%'}}
+                />
+              </Form.Item>
+              <Form.Item label="关闭窗口" >
+                <Form.Item  name="closeTime" noStyle>
+                  <InputNumber min={1} max={60}/>
+                </Form.Item>
+                <span className="ant-form-text"> 分</span>
+              </Form.Item>
+              
+              <Form.Item 
+                label="提醒标题" 
+                name="noticeTitle"
+                required
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择提醒时间',
+                  },
+                ]}
+              >
+                <Input  placeholder={"输入标题"}/>
+              </Form.Item>
+              <Form.Item label="提醒内容" name="noticeContent">
+                <Input.TextArea autoSize={{ minRows: 4, maxRows: 6 }} placeholder={"输入提醒内容"} />
+              </Form.Item>
+            </Form>
+          </div>
         </Modal>
       </div>
       </div>

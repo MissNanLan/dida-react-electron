@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import MessageBuilder from './main/event/message'
+import db from './main/db'
+
 
 export default class AppUpdater {
   constructor() {
@@ -97,6 +99,8 @@ const createWindow = async () => {
 
   const messageBuilder =new MessageBuilder(mainWindow);
   messageBuilder.handleMessage();
+
+  global['noticeDb'] = db.notice
 
 
   // Remove this if your app does not use auto updates
