@@ -91,7 +91,6 @@ export default class Home extends React.Component<{}, IState> {
 
   render() {
     const { dataSource, visible, confirmLoading } = this.state;
-
     let delNoticeType = noticeType => {
       switch (noticeType) {
         case 0:

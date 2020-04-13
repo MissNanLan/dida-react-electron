@@ -1,12 +1,15 @@
-import React from 'react';
-import { Table, Input, Button, Row, Col } from 'antd';
+import React, { useState } from 'react';
+import { Table, Input, Button, Row, Col, Modal } from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
+import CaseManageModal from './components/CaseManageModal';
 const { Search } = Input;
 
 type Props = {};
 
 export default function CaseManage(props: Props) {
+  const [visible, addCase] = useState(false);
+
   const columns = [
     {
       title: '案件名称',
@@ -48,7 +51,7 @@ export default function CaseManage(props: Props) {
             <FormOutlined />
           </Button>
 
-          <Button  type="link" size="small">
+          <Button type="link" size="small">
             <DeleteOutlined />
           </Button>
         </div>
@@ -77,6 +80,9 @@ export default function CaseManage(props: Props) {
     }
   ];
 
+  let handOk = () => {};
+
+
   return (
     <CaseManageWrapper>
       <SearchBox>
@@ -91,11 +97,21 @@ export default function CaseManage(props: Props) {
         </Row>
       </SearchBox>
       <FeatureBox>
-        <Button type="primary">
+        <Button type="primary" onClick={() => addCase(true)}>
           <PlusOutlined />
           增加
         </Button>
       </FeatureBox>
+      <Modal
+        title="新增案件"
+        visible={visible}
+        onOk={handOk}
+        onCancel={() => addCase(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <CaseManageModal></CaseManageModal>
+      </Modal>
       <Table columns={columns} dataSource={data} />
     </CaseManageWrapper>
   );
