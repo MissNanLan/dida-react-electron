@@ -8,7 +8,8 @@ import {
   DatePicker,
   Select,
   InputNumber,
-  Popover
+  Popover,
+  Tooltip
 } from 'antd';
 import electron from 'electron';
 import moment from 'moment';
@@ -144,17 +145,21 @@ export default class Home extends React.Component<{}, IState> {
         key: '_id',
         render: record => (
           <div>
-            <Button type="link" size="small">
-              <FormOutlined />
-            </Button>
+            <Tooltip placement="bottom" title="编辑">
+              <Button type="link" size="small">
+                <FormOutlined />
+              </Button>
+            </Tooltip>
 
-            <Button
-              type="link"
-              size="small"
-              onClick={() => this.del(record._id)}
-            >
-              <DeleteOutlined />
-            </Button>
+            <Tooltip placement="bottom" title="删除">
+              <Button
+                type="link"
+                size="small"
+                onClick={() => this.del(record._id)}
+              >
+                <DeleteOutlined />
+              </Button>
+            </Tooltip>
           </div>
         )
       }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Input, Button, Row, Col, Modal } from 'antd';
+import { Table, Input, Button, Row, Col, Modal, Tooltip } from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
 import CaseManageModal from './components/CaseManageModal';
@@ -47,13 +47,17 @@ export default function CaseManage(props: Props) {
       key: '_id',
       render: () => (
         <div>
-          <Button type="link" size="small">
-            <FormOutlined />
-          </Button>
-
-          <Button type="link" size="small">
-            <DeleteOutlined />
-          </Button>
+          <Tooltip placement="bottom" title="编辑">
+            <Button type="link" size="small">
+              <FormOutlined />
+            </Button>
+          </Tooltip>
+          
+          <Tooltip placement="bottom" title="删除">
+            <Button type="link" size="small">
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
         </div>
       )
     }
@@ -81,7 +85,6 @@ export default function CaseManage(props: Props) {
   ];
 
   let handOk = () => {};
-
 
   return (
     <CaseManageWrapper>
