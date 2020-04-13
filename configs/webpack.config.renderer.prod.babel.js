@@ -116,6 +116,55 @@ export default merge.smart(baseConfig, {
           }
         ]
       },
+      {
+        test: /\.global\.less$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 1
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {
+                'primary-color': '#61BFAD'
+              },
+              javascriptEnabled: true,
+              sourceMap: true
+            }
+          }
+        ]
+      },
+      // {
+      //   test: /^((?!\.global).)*\.less$/,
+      //   use: [
+      //     {
+      //       loader: MiniCssExtractPlugin.loader
+      //     },
+      //     {
+      //       loader: 'css-loader',
+      //       options: {
+      //         modules: {
+      //           localIdentName: '[name]__[local]__[hash:base64:5]'
+      //         },
+      //         importLoaders: 1,
+      //         sourceMap: true
+      //       }
+      //     },
+      //     {
+      //       loader: 'less-loader',
+      //       options: {
+      //         sourceMap: true
+      //       }
+      //     }
+      //   ]
+      // },
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
