@@ -221,7 +221,7 @@
     "cross-spawn": "^7.0.1",
     "css-loader": "^3.4.2",
     "detect-port": "^1.3.0",
-    "electron": "7.1.13", 
+    "electron": "7.1.13",
     "electron-builder": "^22.3.6",
     "electron-devtools-installer": "^2.2.4",
     "electron-rebuild": "^1.10.0",
@@ -278,6 +278,7 @@
     "yarn": "^1.21.1"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.0.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@hot-loader/react-dom": "^16.13.0",
     "antd": "^4.1.1",

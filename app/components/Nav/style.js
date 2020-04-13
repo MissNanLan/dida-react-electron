@@ -12,6 +12,7 @@ export const NavWrapper = styled.div `
     line-height: 68px;
     background-color: #fff;
     padding: 0 40px;
+    box-shadow: 0 2px 8px #f0f1f2;
     .logo{
        width: 64px;
        height: 50px;
