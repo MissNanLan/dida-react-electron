@@ -12,12 +12,19 @@
 </head>
 <body>
     <div id="app"></div>
-    <script type="text/babel">  
+    <script type="text/babel">
+        const NoticeService = require('../service/notice_service.js')
+        const {ipcRenderer} = require('electron');
+        const noticeService  = new NoticeService()
+      
+
+       
         class TimeNow extends React.Component{
             constructor(){
                 super();
                 this.state = {
-                    time: ''
+                    time: '',
+                    message:''
                 }                
             }
             componentDidMount = () =>{
@@ -27,10 +34,16 @@
                         time
                     });                    
                 }, 1000);
+                const info = noticeService.getInfo(1)
+                ipcRenderer.on('dataJsonPort',(event, message)=>{
+                    this.setState({
+                        message:noticeService.getInfo(message)
+                    })
+                })
             }           
             render = () => {
-                const {time} = this.state;
-                return <div>时间：{time}</div>
+                const {time,message} = this.state;
+                return <div>时间：{time} {message}</div>
             }
         }
         class MessageBox extends React.Component{  
@@ -38,6 +51,7 @@
                 alert('clicked');  
             }
             render = ()=>{  
+               
                 return ( 
                     <div>
                         <antd.Button type="primary">Primary</antd.Button> 

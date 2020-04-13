@@ -3,6 +3,8 @@
   top: 30%;
   left: 10px;
   text-align: center;
+  height: 100vh;
+  margin: 3vh;
 }
 
 .container h2 {

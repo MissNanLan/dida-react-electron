@@ -14,10 +14,15 @@ export default class MessageBuilder{
         ipcMain.on('create-notice-window',(event,data)=>{
             let win:BrowserWindow | null= new BrowserWindow({
                 width: 800,
-                height: 600
+                height: 600,
+                webPreferences:{nodeIntegration:true}
             })
             win.on('close', () => { win = null })
             win.loadURL(`file://${__dirname}/static/window.html`);
+            win.webContents.on('did-finish-load', function(){
+                if(win) win.webContents.send('dataJsonPort', data);
+            });
+            win.webContents.openDevTools()
         })
     }
 }
