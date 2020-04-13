@@ -100,7 +100,7 @@ const createWindow = async () => {
   const messageBuilder =new MessageBuilder(mainWindow);
   messageBuilder.handleMessage();
 
-  global['noticeDb'] = db.notice
+  global['db'] = db
 
 
   // Remove this if your app does not use auto updates

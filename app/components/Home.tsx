@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag, Button,Modal,Form,Input,DatePicker,Select,InputNumber,Tooltip} from 'antd';
+import { Table, Tag, Button,Modal,Form,Input,DatePicker,Select,InputNumber,Tooltip,Popover} from 'antd';
 import electron from 'electron';
 import moment from 'moment'
 import styles from './Home.css';
@@ -56,13 +56,15 @@ export default class Home extends React.Component<{}, IState> {
     // this.noticeServie.notice()
   }
   handOk= async()=>{
+    const form = this.formRef.current
+    await form.validateFields();
     this.setState({
       confirmLoading:true
     })
-    let doc = this.formRef.current.getFieldsValue()
+    let doc = form.getFieldsValue()
     await this.noticeServie.insert(doc)
     await this.list()
-    this.formRef.current.resetFields()
+    form.resetFields()
     this.setState({
       confirmLoading:false,
       visible:false
@@ -94,7 +96,19 @@ export default class Home extends React.Component<{}, IState> {
         title: "提醒时间",
         dataIndex: "noticeTime",
         key: "noticeTime",
-        render:(text)=>(moment(text).format("YYYY年MM月DD日 HH:mm:ss"))
+        width: 200,
+        render:(noticeTime)=>(moment(noticeTime).format("YYYY年MM月DD日 HH:mm:ss"))
+      },
+      {
+        title: "提醒标题",
+        dataIndex: "noticeTitle",
+        key: "noticeTitle",
+        width: 500,
+        render:(title,record)=>(
+          <Popover placement="topLeft" title={title} content={record.noticeContent} trigger="hover">
+            {title}
+          </Popover>
+        )
       },
       {
         title: "提醒方式",
@@ -102,11 +116,8 @@ export default class Home extends React.Component<{}, IState> {
         key: "noticeType",
         render: (noticeType) => (<span>{delNoticeType(noticeType)}</span>)
       },
-      {
-        title: "提醒标题",
-        dataIndex: "noticeTitle",
-        key: "noticeTitle"
-      }, {
+      
+       {
         title: "操作",
         dataIndex: "_id",
         key: "_id",
@@ -133,7 +144,7 @@ export default class Home extends React.Component<{}, IState> {
             增加 
           </Button>
         </div>
-        <Table columns={columns} dataSource={dataSource} />
+        <Table columns={columns} dataSource={dataSource} size="small" />
         <Modal
           title="增加提醒"
           visible={visible}
@@ -149,7 +160,13 @@ export default class Home extends React.Component<{}, IState> {
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 20 }}
               layout="horizontal"
-              initialValues={{ size: 'small',noticeTime:moment(),noticeType:0,closeTime:20,noticeTitle:'',noticeContent:''}}
+              initialValues={
+                { size: 'small',
+                  noticeTime:moment(),
+                  noticeType:0,
+                  closeTime:20,
+                  noticeTitle:'',
+                  noticeContent:''}}
           
             >
               <Form.Item label={
@@ -200,8 +217,8 @@ export default class Home extends React.Component<{}, IState> {
                 rules={[
                   {
                     required: true,
-                    message: '请选择提醒时间',
-                  },
+                    message: '请选择提醒标题',
+                  }
                 ]}
               >
                 <Input  placeholder={"输入标题"}/>

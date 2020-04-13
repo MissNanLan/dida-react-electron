@@ -4,8 +4,10 @@
 // import schedule from 'node-schedule';
 
 import electron from 'electron';
+import Datastore from 'nedb-promises';
 
-const noticeDb = electron.remote.getGlobal('noticeDb')
+const db = electron.remote.getGlobal('db')
+const noticeDb:Datastore = db.notice
 
 interface INoticePO{
     noticeTime: Date,
@@ -91,7 +93,7 @@ class NoticeService {
     }
     list = async () => {
         // await noticeDb.remove({},{multi:true})
-      let dbDoc =  await noticeDb.find({})
+      let dbDoc =  await noticeDb.find({}).sort({"noticeTime":1})
 
       return dbDoc
 
