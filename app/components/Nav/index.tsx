@@ -7,7 +7,7 @@ import routes from '../../constants/routes.json';
 export default function Nav() {
   return (
     <NavWrapper>
-      <div className="title">这是标题</div>
+      <div className="title">这是标题ddd</div>
       <div className="nav">
         <Menu mode="horizontal" defaultSelectedKeys={['2']}>
           <Menu.Item key="1">

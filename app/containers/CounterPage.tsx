@@ -6,8 +6,8 @@ import {
   decrement,
   incrementIfOdd,
   incrementAsync
-} from '../actions/counter';
-import { counterStateType } from '../reducers/types';
+} from '../store/actions/counter';
+import { counterStateType } from '../store/reducers/types';
 
 function mapStateToProps(state: counterStateType) {
   return {

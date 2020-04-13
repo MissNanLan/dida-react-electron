@@ -134,6 +134,29 @@ export default merge.smart(baseConfig, {
           }
         ]
       },
+      {
+        test: /\.global\.less$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              modifyVars: {
+                'primary-color': '#61BFAD'
+              },
+              javascriptEnabled: true
+            }
+          }
+        ]
+      },
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
