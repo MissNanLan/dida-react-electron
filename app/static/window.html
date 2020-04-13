@@ -13,11 +13,7 @@
 <body>
     <div id="app"></div>
     <script type="text/babel">
-        const NoticeService = require('../service/notice_service.js')
         const {ipcRenderer} = require('electron');
-        const noticeService  = new NoticeService()
-      
-
        
         class TimeNow extends React.Component{
             constructor(){
@@ -34,10 +30,9 @@
                         time
                     });                    
                 }, 1000);
-                const info = noticeService.getInfo(1)
                 ipcRenderer.on('dataJsonPort',(event, message)=>{
                     this.setState({
-                        message:noticeService.getInfo(message)
+                        message:message
                     })
                 })
             }           
