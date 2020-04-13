@@ -1,17 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Menu ,Row, Col} from 'antd';
+import { NavWrapper } from './style';
 import routes from '../../constants/routes.json';
-const { Header, Content, Footer } = Layout;
 
-export default function Home() {
-    return (
-    <Header>
-      <div className="logo" />
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-        <Menu.Item key="1"><Link to={routes.HOME}>to Home</Link></Menu.Item>
-        <Menu.Item key="2"><Link to={routes.COUNTER}>to Counter</Link></Menu.Item>
-      </Menu>
-    </Header>
-    )
+export default function Nav() {
+  let url =''
+  if(process.env.NODE_ENV === 'production'){
+    url= './static/logo.png'
+  }else{
+    url = `file://${__dirname}/static/logo.png`
+  }
+ 
+  return (
+    <NavWrapper>
+      <Row style={{width:'100%'}}>
+        <Col span={12}><div className="title"><img src={url} className="logo"/>第一稽查局检查一科</div></Col>
+        <Col span={8} offset={4}>
+            <Menu mode="horizontal" defaultSelectedKeys={['1']}>
+              <Menu.Item key="1">
+                <Link to={routes.HOME}>定时提醒</Link>
+              </Menu.Item>
+              <Menu.Item key="2">
+                <Link to={routes.COUNTER}>案件管理</Link>
+              </Menu.Item>
+            </Menu>
+        </Col>
+      </Row>
+        {/* <
+        <div className="menu">
+         
+          </div> */}
+    </NavWrapper>
+  );
 }

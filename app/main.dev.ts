@@ -14,12 +14,14 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import MessageBuilder from './main/event/message'
+import db from './main/db'
+
 
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
+    // autoUpdater.checkForUpdatesAndNotify();
   }
 }
 
@@ -59,13 +61,15 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
+    resizable:false,
+    maximizable:false,
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {
             nodeIntegration: true
           }
         : {
-            preload: path.join(__dirname, 'dist/renderer.prod.js')
+            preload: path.join(__dirname, 'dist/renderer.prod.js'),
           }
   });
 
@@ -84,6 +88,7 @@ const createWindow = async () => {
       mainWindow.focus();
     }
   });
+  mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -94,6 +99,8 @@ const createWindow = async () => {
 
   const messageBuilder =new MessageBuilder(mainWindow);
   messageBuilder.handleMessage();
+
+  global['db'] = db
 
 
   // Remove this if your app does not use auto updates
