@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Input, DatePicker } from 'antd';
+import { Form, Input, DatePicker ,Button} from 'antd';
+import moment from 'moment';
 type Props = {};
 
 export default function CaseManageModal(props: Props) {
@@ -11,49 +12,14 @@ export default function CaseManageModal(props: Props) {
       span: 16
     }
   };
-  const tailLayout = {
-    wrapperCol: {
-      offset: 8,
-      span: 16
-    }
-  };
 
   const [form] = Form.useForm();
 
-  const onGenderChange = value => {
-    switch (value) {
-      case 'male':
-        form.setFieldsValue({
-          note: 'Hi, man!'
-        });
-        return;
 
-      case 'female':
-        form.setFieldsValue({
-          note: 'Hi, lady!'
-        });
-        return;
-
-      case 'other':
-        form.setFieldsValue({
-          note: 'Hi there!'
-        });
-    }
-  };
+  const dateFormat = 'YYYY-MM-DD';
 
   const onFinish = values => {
     console.log(values);
-  };
-
-  const onReset = () => {
-    form.resetFields();
-  };
-
-  const onFill = () => {
-    form.setFieldsValue({
-      note: 'Hello world!',
-      gender: 'male'
-    });
   };
 
   return (
@@ -64,13 +30,17 @@ export default function CaseManageModal(props: Props) {
       onFinish={onFinish}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
+      initialValues={{
+        closingDate:moment(new Date(), dateFormat),
+      }}
     >
       <Form.Item
         name="caseName"
         label="案件名称"
         rules={[
           {
-            required: true
+            required: true,
+            message: '请输入案件名称'
           }
         ]}
       >
@@ -81,11 +51,11 @@ export default function CaseManageModal(props: Props) {
         label="主查员"
         rules={[
           {
-            required: true
+            required: true,
+            message: '请输入主查员'
           }
         ]}
       >
-        {' '}
         <Input />
       </Form.Item>
       <Form.Item
@@ -93,11 +63,11 @@ export default function CaseManageModal(props: Props) {
         label="辅查员"
         rules={[
           {
-            required: true
+            required: true,
+            message: '请输入辅查员'
           }
         ]}
       >
-        {' '}
         <Input />
       </Form.Item>
       <Form.Item
@@ -105,36 +75,35 @@ export default function CaseManageModal(props: Props) {
         label="审理员"
         rules={[
           {
-            required: true
+            required: true,
+            message: '请输入审理员'
           }
         ]}
       >
-        {' '}
         <Input />
       </Form.Item>
       <Form.Item
         name="checkDate"
         label="检查期间"
-        rules={[
-          {
-            required: true
-          }
-        ]}
       >
-        {' '}
         <Input />
       </Form.Item>
       <Form.Item
-        name="colsingDate"
+        name="closingDate"
         label="结案日"
         rules={[
           {
-            required: true
+            required: true,
+            message: '请选择结案日'
           }
         ]}
       >
-        {' '}
-        <DatePicker />
+        <DatePicker format={dateFormat}/>
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
       </Form.Item>
     </Form>
   );

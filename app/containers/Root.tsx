@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
 import zhCN from 'antd/es/locale/zh_CN';
 import { ConfigProvider } from 'antd';
-import { Store } from '../store/reducers/types';
+import { Store } from '../store/types/counter';
 import Routes from '../Routes';
 
 type Props = {
