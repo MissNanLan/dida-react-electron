@@ -8,7 +8,7 @@ import { caseManageCaseStateType } from '../../store/types/caseManage';
 
 function mapStateToProps(state: caseManageCaseStateType) {
   return {
-    coucaseName: nter: state.caseName
+    caseName: state.caseName
   };
 }
 

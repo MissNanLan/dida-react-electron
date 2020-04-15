@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Input, DatePicker ,Button} from 'antd';
 import moment from 'moment';
-type Props = {};
 
-export default function CaseManageModal(props: Props) {
+
+export default function CaseManageModal(props) {
   const layout = {
     labelCol: {
       span: 8
@@ -19,6 +19,7 @@ export default function CaseManageModal(props: Props) {
   const dateFormat = 'YYYY-MM-DD';
 
   const onFinish = values => {
+    props.handleCaseFrom(values);
     console.log(values);
   };
 
@@ -99,11 +100,6 @@ export default function CaseManageModal(props: Props) {
         ]}
       >
         <DatePicker format={dateFormat}/>
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
       </Form.Item>
     </Form>
   );

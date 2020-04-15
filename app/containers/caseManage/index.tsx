@@ -7,8 +7,10 @@ const { Search } = Input;
 
 type Props = {};
 
+
 export default function CaseManage(props: Props) {
   const [visible, addCase] = useState(false);
+  let child:any;
 
   const columns = [
     {
@@ -84,7 +86,16 @@ export default function CaseManage(props: Props) {
     }
   ];
 
-  let handOk = () => {};
+  let handOk = () => {
+
+    console.log(child)
+   
+
+  };
+
+
+
+
 
   return (
     <CaseManageWrapper>
