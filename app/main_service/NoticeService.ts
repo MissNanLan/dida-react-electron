@@ -66,7 +66,7 @@ class NoticeService {
                 return '';
         }
     }// 具体通知内容
-    _doNotice = (notice:INoticePO|null = null) => {
+    _doNotice = (notice:INoticePO|any = null) => {
         ipcRenderer.send('create-notice-window', JSON.stringify(notice));
     }
     insert = async(document) => {
@@ -100,8 +100,8 @@ class NoticeService {
     // update = (notice) => {
 
     // }
-    notice = () => {
-        this._doNotice()
+    notice = (messag:string) => {
+        this._doNotice(messag)
     }
 
 

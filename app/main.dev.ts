@@ -62,7 +62,7 @@ const createWindow = async () => {
     width: 1024,
     height: 728,
     resizable:false,
-    maximizable:false,
+    autoHideMenuBar:true,
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {

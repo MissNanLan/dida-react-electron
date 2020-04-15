@@ -66,7 +66,7 @@ export default class Home extends React.Component<{}, IState> {
   };
 
   notice = () => {
-    this.noticeServie.notice()
+    this.noticeServie.notice("this message from home")
   };
 
   handOk = async () => {

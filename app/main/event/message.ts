@@ -14,12 +14,13 @@ export default class MessageBuilder{
     createNoticeWindow(){
         ipcMain.on('create-notice-window',(event,data)=>{
             let win:BrowserWindow | null= new BrowserWindow({
-                width: 800,
-                height: 600,
+                width: 500,
+                height: 400,
                 webPreferences:{
-                    nodeIntegration:true,
-                    webSecurity: false
-                }
+                    nodeIntegration:true
+                },
+                autoHideMenuBar:true,
+                focusable:true
             })
             // url.format({
             //     pathname: path.join(__dirname, '/dist/index.html'),
@@ -27,14 +28,14 @@ export default class MessageBuilder{
             //     slashes: true
             // })
             win.on('close', () => { win = null })
-            let proUrl = `file://${__dirname}/static/window.html`
-            let devUrl = path.join(__dirname,'static/window.html')
+            let proUrl = `file://${__dirname}/dist/dialog/index.html`
+            let devUrl = `http://localhost:1212/static/window.html`
             let url = `${process.env.NODE_ENV === 'development' ?devUrl:proUrl}`
             win.loadURL(url);
             win.webContents.on('did-finish-load', function(){
                 if(win) win.webContents.send('dataJsonPort', data);
             });
-            win.webContents.openDevTools()
+            // win.webContents.openDevTools()
         })
     }
 }
