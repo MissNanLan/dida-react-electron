@@ -1,16 +1,38 @@
 
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import { ipcRenderer } from 'electron';
 
 class Dialog extends Component {
 
+  constructor(){
+    super();
+    this.state = {
+        time: '',
+        message:''
+    }                
+  }
+
+  componentDidMount = () =>{
+    setInterval(()=>{
+        var time = new Date().toLocaleString();
+        this.setState({
+            time
+        });                    
+    }, 1000);
+    ipcRenderer.on('dataJsonPort',(event, message)=>{
+        this.setState({
+            message:message
+        })
+    })
+  }
+
     render() {
+        const {message} = this.state
         return (
-          <form>
-            <input
-              type="text"
-            />
-          </form>
+          <div>
+            {message?message:'no message'}
+          </div>
         );
       }
 }

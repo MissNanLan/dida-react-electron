@@ -35,7 +35,7 @@ export default class MessageBuilder{
             win.webContents.on('did-finish-load', function(){
                 if(win) win.webContents.send('dataJsonPort', data);
             });
-            // win.webContents.openDevTools()
+            win.webContents.openDevTools()
         })
     }
 }

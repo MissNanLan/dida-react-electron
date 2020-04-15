@@ -3,6 +3,7 @@ const path = require('path')
 
 module.exports = {
     // 入口文件
+    target: 'electron-renderer',
     entry: "./app/static/dialog/index.js",
     // 出口文件
     output: {
