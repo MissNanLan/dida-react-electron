@@ -67,7 +67,7 @@ export default class Home extends React.Component<{}, IState> {
   };
 
   notice = () => {
-    // this.noticeServie.notice()
+    this.noticeServie.notice("this message from home")
   };
 
   handOk = async () => {
@@ -176,6 +176,10 @@ export default class Home extends React.Component<{}, IState> {
           <Button type="primary" onClick={this.add}>
             <PlusOutlined />
             增加
+          </Button>
+          <Button type="primary" onClick={this.notice}>
+            <PlusOutlined />
+            弹窗
           </Button>
         </FeatureBox>
         <Table columns={columns} dataSource={dataSource} size="small" />

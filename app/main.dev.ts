@@ -12,7 +12,7 @@ import path from 'path';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
+import MenuBuilder from './main/menu';
 import MessageBuilder from './main/event/message'
 import db from './main/db'
 
@@ -62,7 +62,7 @@ const createWindow = async () => {
     width: 1024,
     height: 728,
     resizable:false,
-    maximizable:false,
+    autoHideMenuBar:true,
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {
@@ -94,11 +94,8 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
-
-  const messageBuilder =new MessageBuilder(mainWindow);
-  messageBuilder.handleMessage();
+  new MenuBuilder(mainWindow).buildMenu();
+  new MessageBuilder(mainWindow).handleMessage();
 
   global['db'] = db
 

@@ -7,7 +7,7 @@ app.getAppPath();
 const p = path.resolve(`${process.resourcesPath}/../bin/`);
 
 const dbFactory = (fileName) => Datastore.create({
-  filename: `${process.env.NODE_ENV === 'dev' ?'.' : p}/data/${fileName}`, 
+  filename: `${process.env.NODE_ENV === 'development' ?'.' : p}/data/${fileName}`, 
   timestampData: true,
   autoload: true
 });
