@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Table, Input, Button, Row, Col, Modal, Tooltip } from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
@@ -7,11 +7,8 @@ const { Search } = Input;
 
 type Props = {};
 
-
 export default function CaseManage(props: Props) {
   const [visible, addCase] = useState(false);
-  let child:any;
-
   const columns = [
     {
       title: '案件名称',
@@ -54,7 +51,7 @@ export default function CaseManage(props: Props) {
               <FormOutlined />
             </Button>
           </Tooltip>
-          
+
           <Tooltip placement="bottom" title="删除">
             <Button type="link" size="small">
               <DeleteOutlined />
@@ -64,7 +61,6 @@ export default function CaseManage(props: Props) {
       )
     }
   ];
-
   const data = [
     {
       key: '1',
@@ -85,17 +81,11 @@ export default function CaseManage(props: Props) {
       colsingDate: '2020-04-13'
     }
   ];
-
+  const childRef = useRef()
   let handOk = () => {
-
-    console.log(child)
-   
-
+    let _childRef = childRef.current;
+    console.log(_childRef);
   };
-
-
-
-
 
   return (
     <CaseManageWrapper>
@@ -124,8 +114,9 @@ export default function CaseManage(props: Props) {
         okText="确认"
         cancelText="取消"
       >
-        <CaseManageModal></CaseManageModal>
+        <CaseManageModal ref={childRef}></CaseManageModal>
       </Modal>
+
       <Table columns={columns} dataSource={data} />
     </CaseManageWrapper>
   );
