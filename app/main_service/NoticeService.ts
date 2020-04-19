@@ -67,7 +67,7 @@ class NoticeService {
         }
     }// 具体通知内容
     _doNotice = (notice:INoticePO|any = null) => {
-        ipcRenderer.send('create-notice-window', JSON.stringify(notice));
+        ipcRenderer.send('create-notice-window', notice);
     }
     insert = async(document) => {
        let  noticePO:INoticePO = {
@@ -85,6 +85,10 @@ class NoticeService {
         this._convertNotice(noticePO)
         return res
     }
+    update = async (notice) => {
+        notice.noticeTime = notice.noticeTime.toDate()
+        await noticeDb.update({_id:notice._id},{$set:notice},{multi:false})
+    }
     list = async () => {
       let dbDoc =  await noticeDb.find({}).sort({"noticeTime":1})
       return dbDoc
@@ -97,9 +101,7 @@ class NoticeService {
             job.cancel()
         }
     }
-    // update = (notice) => {
 
-    // }
     notice = (messag:string) => {
         this._doNotice(messag)
     }
@@ -111,4 +113,4 @@ class NoticeService {
     }
 }
 
-export default NoticeService
+export default new NoticeService()

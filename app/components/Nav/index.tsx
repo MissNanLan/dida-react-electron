@@ -29,6 +29,9 @@ export default function Nav() {
             <Menu.Item key="2">
               <Link to={routes.CASEMANAGE}>案件管理</Link>
             </Menu.Item>
+            <Menu.Item key="3">
+              <Link to={routes.COORDINATION}>协查管理</Link>
+            </Menu.Item>
           </Menu>
         </Col>
       </Row>

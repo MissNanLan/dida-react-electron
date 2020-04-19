@@ -3,9 +3,11 @@ import path from 'path';
 
 export default class MessageBuilder{
     mainWindow: BrowserWindow;
+    noticeWindow:BrowserWindow|null;
 
     constructor(mainWindow: BrowserWindow) {
       this.mainWindow = mainWindow;
+      this.noticeWindow = null
     }
     handleMessage(){
         this.createNoticeWindow()
@@ -13,7 +15,8 @@ export default class MessageBuilder{
 
     createNoticeWindow(){
         ipcMain.on('create-notice-window',(event,data)=>{
-            let win:BrowserWindow | null= new BrowserWindow({
+            
+            this.noticeWindow= new BrowserWindow({
                 width: 500,
                 height: 400,
                 webPreferences:{
@@ -22,6 +25,7 @@ export default class MessageBuilder{
                 autoHideMenuBar:true,
                 focusable:true
             })
+            let win:BrowserWindow|null = this.noticeWindow
             // url.format({
             //     pathname: path.join(__dirname, '/dist/index.html'),
             //     protocol: 'file:',
@@ -29,7 +33,7 @@ export default class MessageBuilder{
             // })
             win.on('close', () => { win = null })
             let proUrl = `file://${__dirname}/dist/dialog/index.html`
-            let devUrl = `http://localhost:1212/static/window.html`
+            let devUrl = `http://localhost:9000/dialog/index.html`
             let url = `${process.env.NODE_ENV === 'development' ?devUrl:proUrl}`
             win.loadURL(url);
             win.webContents.on('did-finish-load', function(){
@@ -38,4 +42,11 @@ export default class MessageBuilder{
             win.webContents.openDevTools()
         })
     }
+    closeNoticeWindow(){
+        ipcMain.on('close-notice-window',(e,data)=>{
+            console.log(data)
+            this.noticeWindow = null;
+        })
+    }
+    
 }
