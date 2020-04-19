@@ -1,14 +1,25 @@
 import React, { useState, useRef } from 'react';
 import { Table, Input, Button, Row, Col, Modal, Tooltip } from 'antd';
-import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
 import CaseManageModal from './components/CaseManageModal';
 const { Search } = Input;
 
-type Props = {};
-
+type Props = {
+  incrementCase: (params) => void;
+  caseList: [];
+  deleteCase: (params) => void;
+};
+const { confirm } = Modal;
 export default function CaseManage(props: Props) {
-  const [visible, addCase] = useState(false);
+  const { incrementCase, caseList, deleteCase } = props;
+  console.log(props);
+  const [visible, setVisiable] = useState(false);
   const columns = [
     {
       title: '案件名称',
@@ -44,16 +55,16 @@ export default function CaseManage(props: Props) {
       title: '操作',
       dataIndex: '_id',
       key: '_id',
-      render: () => (
+      render: (index, props) => (
         <div>
           <Tooltip placement="bottom" title="编辑">
-            <Button type="link" size="small">
+            <Button type="link" size="small" onClick={() => editCase(0)}>
               <FormOutlined />
             </Button>
           </Tooltip>
 
           <Tooltip placement="bottom" title="删除">
-            <Button type="link" size="small">
+            <Button type="link" size="small" onClick={() => delCase(0)}>
               <DeleteOutlined />
             </Button>
           </Tooltip>
@@ -61,30 +72,44 @@ export default function CaseManage(props: Props) {
       )
     }
   ];
-  const data = [
-    {
-      key: '1',
-      caseName: '案件名称',
-      primaryChecker: '蒋小姐',
-      viceChecker: '石先生',
-      interrogator: '胖胖',
-      checkDate: '2020-04-13',
-      colsingDate: '2020-04-13'
-    },
-    {
-      key: '2',
-      caseName: '案件名称',
-      primaryChecker: '蒋小姐',
-      viceChecker: '石先生',
-      interrogator: '胖胖',
-      checkDate: '2020-04-13',
-      colsingDate: '2020-04-13'
+  const childRef = useRef();
+  let _childRef = childRef.current;
+
+  const handOk = () => {
+    if (_childRef) {
+      let _caseItem = _childRef.value.getFieldsValue();
+      caseList.push(_caseItem);
+      incrementCase(caseList);
+      setVisiable(false);
     }
-  ];
-  const childRef = useRef()
-  let handOk = () => {
-    let _childRef = childRef.current;
-    console.log(_childRef);
+  };
+
+  const addCase = () => {
+    setVisiable(true);
+    if (_childRef) {
+      _childRef.value.resetFields();
+    }
+  };
+
+  const editCase = indx => {
+    setVisiable(true);
+    let _caseItem = caseList.filter((item, index) => index == indx);
+    if (_childRef) {
+      _childRef.value.resetFields();
+      _childRef.value.setFieldsValue(_caseItem[0]);
+    }
+  };
+
+  const delCase = indx => {
+    confirm({
+      title: '你确定删除吗',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        console.log(caseList.splice(indx, 0));
+        deleteCase(caseList.splice(indx, 0));
+      },
+      onCancel() {}
+    });
   };
 
   return (
@@ -101,7 +126,7 @@ export default function CaseManage(props: Props) {
         </Row>
       </SearchBox>
       <FeatureBox>
-        <Button type="primary" onClick={() => addCase(true)}>
+        <Button type="primary" onClick={() => addCase()}>
           <PlusOutlined />
           增加
         </Button>
@@ -110,14 +135,14 @@ export default function CaseManage(props: Props) {
         title="新增案件"
         visible={visible}
         onOk={handOk}
-        onCancel={() => addCase(false)}
+        onCancel={() => setVisiable(false)}
         okText="确认"
         cancelText="取消"
       >
         <CaseManageModal ref={childRef}></CaseManageModal>
       </Modal>
 
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={caseList} />
     </CaseManageWrapper>
   );
 }

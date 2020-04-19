@@ -2,7 +2,7 @@ import React, { useRef, useImperativeHandle } from 'react';
 import { Form, Input, DatePicker } from 'antd';
 import moment from 'moment';
 
- const CaseManageModal = React.forwardRef((props, ref) => {
+const CaseManageModal = React.forwardRef((props, ref) => {
   const layout = {
     labelCol: {
       span: 8
@@ -14,11 +14,6 @@ import moment from 'moment';
   const [form] = Form.useForm();
   const childRef = useRef(null);
   const dateFormat = 'YYYY-MM-DD';
-
-  const onFinish = values => {
-    console.log(values);
-  };
-
   useImperativeHandle(ref, () => {
     return {
       value: childRef.current
@@ -30,7 +25,6 @@ import moment from 'moment';
       {...layout}
       form={form}
       name="control-hooks"
-      onFinish={onFinish}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 20 }}
       ref={childRef}

@@ -12,6 +12,7 @@ type Props = {
 };
 
 export default function Counter(props: Props) {
+  console.log(props);
   const {
     increment,
     incrementIfOdd,

@@ -32,10 +32,6 @@ export default function Nav() {
           </Menu>
         </Col>
       </Row>
-      {/* <
-        <div className="menu">
-         
-          </div> */}
     </NavWrapper>
   );
 }
