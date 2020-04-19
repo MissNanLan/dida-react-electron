@@ -35,7 +35,8 @@
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-watch": "yarn test --watch",
-    "build-dialog": "webpack --config ./configs/webpack.config.html.js --mode production"
+    "build-dialog": "webpack --config ./configs/webpack.config.html.js --mode production",
+    "build-dialog-dev":"cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.html.js --hot"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -63,7 +64,8 @@
       "service/",
       "main.prod.js",
       "main.prod.js.map",
-      "package.json"
+      "package.json",
+      "data/"
     ],
     "dmg": {
       "contents": [

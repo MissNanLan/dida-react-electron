@@ -1,43 +1,34 @@
 
-import React, { Component } from "react";
+import React, { useState,useEffect } from 'react';
 import ReactDOM from "react-dom";
 import { ipcRenderer } from 'electron';
+import { Button,Typography } from 'antd';
+import { PlusOutlined} from '@ant-design/icons';
 
-class Dialog extends Component {
+const { Title, Paragraph, Text } = Typography;
 
-  constructor(){
-    super();
-    this.state = {
-        time: '',
-        message:''
-    }                
-  }
-
-  componentDidMount = () =>{
-    setInterval(()=>{
-        var time = new Date().toLocaleString();
-        this.setState({
-            time
-        });                    
-    }, 1000);
+const DialogWindow = ()=>{
+  const [message, setMessage] = useState('');
+  
+  useEffect(()=>{
     ipcRenderer.on('dataJsonPort',(event, message)=>{
-        this.setState({
-            message:message
-        })
+      setMessage(message)
+      console.log(message)
     })
-  }
+    setInterval(()=>{
+      ipcRenderer.send('close-notice-window','close')                
+    }, message.closeTime*60*1000);
+  },[])
 
-    render() {
-        const {message} = this.state
-        return (
-          <div>
-            {message?message:'no message'}
-          </div>
-        );
-      }
+  return (
+    <Typography>
+      <Title>{message.noticeTitle}</Title>
+      <Paragraph>{message.noticeContent}</Paragraph>
+    </Typography>
+  )
 }
 
-export default Dialog;
+export default DialogWindow;
 
 const wrapper = document.getElementById("container");
-wrapper ? ReactDOM.render(<Dialog />, wrapper) : false;
+wrapper ? ReactDOM.render(<DialogWindow />, wrapper) : false;

@@ -1,275 +1,301 @@
-import React from 'react';
-import {
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  InputNumber,
-  Popover
-} from 'antd';
-import electron from 'electron';
+import React, { useState,useEffect } from 'react';
 import moment from 'moment';
+import { Button, Modal, Form, Input, Radio,Table,Popover,Select,DatePicker,InputNumber } from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import { HomeWrapper, FeatureBox } from './style';
-import NoticeService from '../../main_service/NoticeService';
-const { ipcRenderer } = electron;
+import noticeService from '../../main_service/NoticeService';
 
-interface IState {
-  dataSource: any;
-  visible?: boolean;
-  confirmLoading?: boolean;
+interface Values {
+  title: string;
+  description: string;
+  modifier: string;
 }
 
-export default class Home extends React.Component<{}, IState> {
-  noticeServie: NoticeService;
+interface CollectionCreateFormProps {
+  visible: boolean;
+  onCreate: (values: Values) => void;
+  onCancel: () => void;
+  formData: any
+}
 
-  formRef = React.createRef<any>();
+const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
+  visible,
+  onCreate,
+  onCancel,
+  formData
+}) => {
+  const [form] = Form.useForm();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      dataSource: [],
-      visible: false,
-      confirmLoading: false
-    };
-    this.noticeServie = new NoticeService();
+  const disabledDate= (current)=> {
+    // Can not select days before today and today
+    return current && current <= moment().endOf('day');
   }
-
-  componentDidMount() {
-    this.list();
-  }
-
-  createNoticeWindow = () => {
-    ipcRenderer.send('create-notice-window', 'this is message');
-  };
-
-  add = () => {
-    this.setState({
-      visible: true
-    });
-  };
-
-  list = async () => {
-    let docs = await this.noticeServie.list();
-    this.setState({
-      dataSource: docs
-    });
-  };
-
-  del = async id => {
-    await this.noticeServie.del(id);
-    await this.list();
-  };
-
-  notice = () => {
-    this.noticeServie.notice("this message from home")
-  };
-
-  handOk = async () => {
-    const form = this.formRef.current;
-    await form.validateFields();
-    this.setState({
-      confirmLoading: true
-    });
-    let doc = form.getFieldsValue();
-    await this.noticeServie.insert(doc);
-    await this.list();
-    form.resetFields();
-    this.setState({
-      confirmLoading: false,
-      visible: false
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  render() {
-    const { dataSource, visible, confirmLoading } = this.state;
-
-    let delNoticeType = noticeType => {
-      switch (noticeType) {
-        case 0:
-          return '一次';
-        case 1:
-          return '每天';
-        case 2:
-          return '每星期';
-        case 3:
-          return '每月';
-        default:
-          return '';
-      }
-    };
-
-    let columns = [
-      {
-        title: '提醒时间',
-        dataIndex: 'noticeTime',
-        key: 'noticeTime',
-        width: 200,
-        render: noticeTime =>
-          moment(noticeTime).format('YYYY年MM月DD日 HH:mm:ss')
-      },
-      {
-        title: '提醒标题',
-        dataIndex: 'noticeTitle',
-        key: 'noticeTitle',
-        width: 500,
-        render: (title, record) => (
-          <Popover
-            placement="topLeft"
-            title={title}
-            content={record.noticeContent}
-            trigger="hover"
-          >
-            {title}
-          </Popover>
-        )
-      },
-      {
-        title: '提醒方式',
-        dataIndex: 'noticeType',
-        key: 'noticeType',
-        render: noticeType => <span>{delNoticeType(noticeType)}</span>
-      },
-
-      {
-        title: '操作',
-        dataIndex: '_id',
-        key: '_id',
-        render: record => (
-          <div>
-            <Button type="link" size="small">
-              <FormOutlined />
-            </Button>
-
-            <Button
-              type="link"
-              size="small"
-              onClick={() => this.del(record._id)}
-            >
-              <DeleteOutlined />
-            </Button>
-          </div>
-        )
-      }
-    ];
-
-    function disabledDate(current) {
-      // Can not select days before today and today
-      return current && current <= moment().endOf('day');
+   
+  useEffect(()=>{
+    if(formData){
+        form.setFieldsValue({
+            _id : formData._id,
+            noticeTime: moment(formData.noticeTime),
+            noticeType: formData.noticeType,
+            closeTime: formData.closeTime,
+            noticeTitle: formData.noticeTitle,
+            noticeContent: formData.noticeContent
+        })
     }
+    return () => {
+        form.resetFields();
+    };
+  },[formData])
 
-    return (
-      <HomeWrapper data-tid="container">
-        <FeatureBox>
-          <Button type="primary" onClick={this.add}>
-            <PlusOutlined />
-            增加
-          </Button>
-          <Button type="primary" onClick={this.notice}>
-            <PlusOutlined />
-            弹窗
-          </Button>
-        </FeatureBox>
-        <Table columns={columns} dataSource={dataSource} size="small" />
-        <Modal
-          title="增加提醒"
-          visible={visible}
-          onOk={this.handOk}
-          confirmLoading={confirmLoading}
-          onCancel={this.handleCancel}
-          okText="确认"
-          cancelText="取消"
-        >
-          <div>
-            <Form
-              ref={this.formRef}
-              labelCol={{ span: 4 }}
-              wrapperCol={{ span: 20 }}
-              layout="horizontal"
-              initialValues={{
-                size: 'small',
-                noticeTime: moment(),
-                noticeType: 0,
-                closeTime: 20,
-                noticeTitle: '',
-                noticeContent: ''
-              }}
+  return (
+    <Modal
+      visible={visible}
+      title="编辑提醒"
+      okText="保存"
+      cancelText="取消"
+      onCancel={onCancel}
+      forceRender={true}
+      destroyOnClose={false}
+      onOk={() => {
+        form
+          .validateFields()
+          .then(values => {
+            form.resetFields();
+            onCreate(values);
+          })
+          .catch(info => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+    
+    >
+      <Form
+        form={form}
+        layout="horizontal"
+        name="form_in_modal"
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
+        initialValues={ {
+            noticeTime: moment(),
+            noticeType: 0,
+            closeTime: 20,
+            noticeTitle: '',
+            noticeContent: ''
+          }}
+      >
+        <Form.Item label="id" name="_id" style={{display:'none'}}>
+            <Input />
+        </Form.Item>
+        <Form.Item
+            label={
+                <span>
+                &nbsp;提醒方式
+                </span>
+            }
+            name="noticeType"
             >
-              <Form.Item
-                label={
-                  <span>
-                    {/* <Tooltip title="选择需要提醒的方式">
-                        <QuestionCircleOutlined />
-                      </Tooltip> */}
-                    &nbsp;提醒方式
-                  </span>
+            <Select>
+                <Select.Option value={0}>一次</Select.Option>
+                <Select.Option value={1}>每天</Select.Option>
+                <Select.Option value={2}>每周</Select.Option>
+                <Select.Option value={3}>每月</Select.Option>
+            </Select>
+        </Form.Item>
+        <Form.Item
+            label="提醒日期"
+            name="noticeTime"
+            required
+            rules={[
+                {
+                required: true,
+                message: '请选择提醒时间'
                 }
-                name="noticeType"
-              >
-                <Select>
-                  <Select.Option value={0}>一次</Select.Option>
-                  <Select.Option value={1}>每天</Select.Option>
-                  <Select.Option value={2}>每周</Select.Option>
-                  <Select.Option value={3}>每月</Select.Option>
-                </Select>
-              </Form.Item>
-              <Form.Item
-                label="提醒日期"
-                name="noticeTime"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择提醒时间'
-                  }
-                ]}
-              >
-                <DatePicker
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabledDate={disabledDate}
-                  showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                  showToday={true}
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-              <Form.Item label="关闭窗口">
-                <Form.Item name="closeTime" noStyle>
-                  <InputNumber min={1} max={60} />
-                </Form.Item>
-                <span className="ant-form-text"> 分</span>
-              </Form.Item>
+            ]}
+        >
+            <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                disabledDate={disabledDate}
+                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                showToday={true}
+                style={{ width: '100%' }}
+            />
+        </Form.Item>
+        <Form.Item label="关闭窗口">
+            <Form.Item name="closeTime" noStyle>
+                <InputNumber min={1} max={60} />
+            </Form.Item>
+            <span className="ant-form-text"> 分</span>
+        </Form.Item>
 
-              <Form.Item
-                label="提醒标题"
-                name="noticeTitle"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择提醒标题'
-                  }
-                ]}
-              >
-                <Input placeholder={'输入标题'} />
-              </Form.Item>
-              <Form.Item label="提醒内容" name="noticeContent">
-                <Input.TextArea
-                  autoSize={{ minRows: 4, maxRows: 6 }}
-                  placeholder={'输入提醒内容'}
-                />
-              </Form.Item>
-            </Form>
-          </div>
-        </Modal>
-      </HomeWrapper>
-    );
+        <Form.Item
+            label="提醒标题"
+            name="noticeTitle"
+            required
+            rules={[
+                {
+                required: true,
+                message: '请输入提醒标题'
+                }
+            ]}
+        >
+            <Input placeholder={'输入标题'} />
+        </Form.Item>
+        <Form.Item label="提醒内容" name="noticeContent">
+            <Input.TextArea
+            autoSize={{ minRows: 4, maxRows: 6 }}
+            placeholder={'输入提醒内容'}
+            />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+
+const Home = () => {
+  const [visible, setVisible] = useState(false);
+  const [dataSource,setDataSource] = useState([]);
+  const [formData,setFormData] = useState(null)
+
+
+  useEffect(  ()=>{
+    listData()
+  },[])
+
+  const listData = async ()=>{
+    let docs = await noticeService.list();
+    setDataSource(docs)
   }
-}
+
+  const saveData = async (data)=>{
+      if(!data['_id']){
+        console.log('Received values of insert: ', data);
+        noticeService.insert(data)
+      }else{
+        console.log('Received values of update: ', data);
+        noticeService.update(data)
+      }
+      setFormData(null)
+  }
+
+  const onCreate = async(values) => {
+    await saveData(values)
+    await listData()
+    setVisible(false);
+  };
+ 
+  const delNoticeType = noticeType => {
+    switch (noticeType) {
+      case 0:
+        return '一次';
+      case 1:
+        return '每天';
+      case 2:
+        return '每星期';
+      case 3:
+        return '每月';
+      default:
+        return '';
+    }
+  };
+
+  const edit = async(data)=>{
+    setVisible(true)
+    setFormData(data)
+  }
+
+  const del = async(id)=>{
+    await noticeService.del(id)
+    await listData()
+  }
+
+
+  const columns = [
+    {
+      title: '提醒时间',
+      dataIndex: 'noticeTime',
+      key: 'noticeTime',
+      width: 200,
+      render: noticeTime =>
+        moment(noticeTime).format('YYYY年MM月DD日 HH:mm:ss')
+    },
+    {
+      title: '提醒标题',
+      dataIndex: 'noticeTitle',
+      key: 'noticeTitle',
+      width: 500,
+      render: (title, record) => (
+        <Popover
+          placement="topLeft"
+          title={title}
+          content={record.noticeContent}
+          trigger="hover"
+        >
+          {title}
+        </Popover>
+      )
+    },
+    {
+      title: '提醒方式',
+      dataIndex: 'noticeType',
+      key: 'noticeType',
+      render: noticeType => <span>{delNoticeType(noticeType)}</span>
+    },
+
+    {
+      title: '操作',
+      dataIndex: '_id',
+      key: '_id',
+      render: (id,data) => (
+        <div>
+          <Button type="link" size="small" onClick={()=>edit(data)}>
+            <FormOutlined />
+          </Button>
+
+          <Button
+            type="link"
+            size="small"
+            onClick={() => del(id)}
+          >
+            <DeleteOutlined />
+          </Button>
+        </div>
+      )
+    }
+  ];
+
+  return (
+    <div>
+      <Button
+        type="primary"
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+         <PlusOutlined />
+            增加
+      </Button>
+      <Button
+        type="primary"
+        onClick={() => {
+            noticeService._doNotice({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5});
+        }}
+      >
+         <PlusOutlined />
+            弹窗
+      </Button>
+
+      <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" />
+
+      <CollectionCreateForm
+        visible={visible}
+        onCreate={onCreate}
+        onCancel={() => {
+          setVisible(false);
+          setFormData(null);
+        }} 
+        formData={formData}
+      />
+    </div>
+  );
+};
+export default Home
