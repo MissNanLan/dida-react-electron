@@ -1,8 +1,18 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Button, Modal, Form, Input, Radio,Table,Popover,Select,DatePicker,InputNumber } from 'antd';
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Table,
+  Popover,
+  Select,
+  DatePicker,
+  InputNumber
+} from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
-
+import { HomeWrapper, FeatureBox } from './style';
 import noticeService from '../../main_service/NoticeService';
 
 interface Values {
@@ -15,7 +25,7 @@ interface CollectionCreateFormProps {
   visible: boolean;
   onCreate: (values: Values) => void;
   onCancel: () => void;
-  formData: any
+  formData: any;
 }
 
 const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
@@ -26,26 +36,26 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const disabledDate= (current)=> {
+  const disabledDate = current => {
     // Can not select days before today and today
     return current && current <= moment().endOf('day');
-  }
-   
-  useEffect(()=>{
-    if(formData){
-        form.setFieldsValue({
-            _id : formData._id,
-            noticeTime: moment(formData.noticeTime),
-            noticeType: formData.noticeType,
-            closeTime: formData.closeTime,
-            noticeTitle: formData.noticeTitle,
-            noticeContent: formData.noticeContent
-        })
+  };
+
+  useEffect(() => {
+    if (formData) {
+      form.setFieldsValue({
+        _id: formData._id,
+        noticeTime: moment(formData.noticeTime),
+        noticeType: formData.noticeType,
+        closeTime: formData.closeTime,
+        noticeTitle: formData.noticeTitle,
+        noticeContent: formData.noticeContent
+      });
     }
     return () => {
-        form.resetFields();
+      form.resetFields();
     };
-  },[formData])
+  }, [formData]);
 
   return (
     <Modal
@@ -67,7 +77,6 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             console.log('Validate Failed:', info);
           });
       }}
-    
     >
       <Form
         form={form}
@@ -75,76 +84,69 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         name="form_in_modal"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
-        initialValues={ {
-            noticeTime: moment(),
-            noticeType: 0,
-            closeTime: 20,
-            noticeTitle: '',
-            noticeContent: ''
-          }}
+        initialValues={{
+          noticeTime: moment(),
+          noticeType: 0,
+          closeTime: 20,
+          noticeTitle: '',
+          noticeContent: ''
+        }}
       >
-        <Form.Item label="id" name="_id" style={{display:'none'}}>
-            <Input />
+        <Form.Item label="id" name="_id" style={{ display: 'none' }}>
+          <Input />
+        </Form.Item>
+        <Form.Item label={<span>&nbsp;提醒方式</span>} name="noticeType">
+          <Select>
+            <Select.Option value={0}>一次</Select.Option>
+            <Select.Option value={1}>每天</Select.Option>
+            <Select.Option value={2}>每周</Select.Option>
+            <Select.Option value={3}>每月</Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item
-            label={
-                <span>
-                &nbsp;提醒方式
-                </span>
+          label="提醒日期"
+          name="noticeTime"
+          required
+          rules={[
+            {
+              required: true,
+              message: '请选择提醒时间'
             }
-            name="noticeType"
-            >
-            <Select>
-                <Select.Option value={0}>一次</Select.Option>
-                <Select.Option value={1}>每天</Select.Option>
-                <Select.Option value={2}>每周</Select.Option>
-                <Select.Option value={3}>每月</Select.Option>
-            </Select>
-        </Form.Item>
-        <Form.Item
-            label="提醒日期"
-            name="noticeTime"
-            required
-            rules={[
-                {
-                required: true,
-                message: '请选择提醒时间'
-                }
-            ]}
+          ]}
         >
-            <DatePicker
-                format="YYYY-MM-DD HH:mm:ss"
-                disabledDate={disabledDate}
-                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                showToday={true}
-                style={{ width: '100%' }}
-            />
+          <DatePicker
+            format="YYYY-MM-DD HH:mm:ss"
+            disabledDate={disabledDate}
+            showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+            showToday={true}
+            style={{ width: '100%' }}
+          />
         </Form.Item>
         <Form.Item label="关闭窗口">
-            <Form.Item name="closeTime" noStyle>
-                <InputNumber min={1} max={60} />
-            </Form.Item>
-            <span className="ant-form-text"> 分</span>
+          <Form.Item name="closeTime" noStyle>
+            <InputNumber min={1} max={60} />
+          </Form.Item>
+          <span className="ant-form-text"> 分</span>
         </Form.Item>
 
         <Form.Item
-            label="提醒标题"
-            name="noticeTitle"
-            required
-            rules={[
-                {
-                required: true,
-                message: '请输入提醒标题'
-                }
-            ]}
+          label="提醒标题"
+          name="noticeTitle"
+          required
+          rules={[
+            {
+              required: true,
+              message: '请输入提醒标题'
+            }
+          ]}
         >
-            <Input placeholder={'输入标题'} />
+          <Input placeholder={'输入标题'} />
         </Form.Item>
         <Form.Item label="提醒内容" name="noticeContent">
-            <Input.TextArea
+          <Input.TextArea
             autoSize={{ minRows: 4, maxRows: 6 }}
             placeholder={'输入提醒内容'}
-            />
+          />
         </Form.Item>
       </Form>
     </Modal>
@@ -153,36 +155,35 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 
 const Home = () => {
   const [visible, setVisible] = useState(false);
-  const [dataSource,setDataSource] = useState([]);
-  const [formData,setFormData] = useState(null)
+  const [dataSource, setDataSource] = useState([]);
+  const [formData, setFormData] = useState(null);
 
+  useEffect(() => {
+    listData();
+  }, []);
 
-  useEffect(  ()=>{
-    listData()
-  },[])
-
-  const listData = async ()=>{
+  const listData = async () => {
     let docs = await noticeService.list();
-    setDataSource(docs)
-  }
+    setDataSource(docs);
+  };
 
-  const saveData = async (data)=>{
-      if(!data['_id']){
-        console.log('Received values of insert: ', data);
-        noticeService.insert(data)
-      }else{
-        console.log('Received values of update: ', data);
-        noticeService.update(data)
-      }
-      setFormData(null)
-  }
+  const saveData = async data => {
+    if (!data['_id']) {
+      console.log('Received values of insert: ', data);
+      noticeService.insert(data);
+    } else {
+      console.log('Received values of update: ', data);
+      noticeService.update(data);
+    }
+    setFormData(null);
+  };
 
-  const onCreate = async(values) => {
-    await saveData(values)
-    await listData()
+  const onCreate = async values => {
+    await saveData(values);
+    await listData();
     setVisible(false);
   };
- 
+
   const delNoticeType = noticeType => {
     switch (noticeType) {
       case 0:
@@ -198,16 +199,15 @@ const Home = () => {
     }
   };
 
-  const edit = async(data)=>{
-    setVisible(true)
-    setFormData(data)
-  }
+  const edit = async data => {
+    setVisible(true);
+    setFormData(data);
+  };
 
-  const del = async(id)=>{
-    await noticeService.del(id)
-    await listData()
-  }
-
+  const del = async id => {
+    await noticeService.del(id);
+    await listData();
+  };
 
   const columns = [
     {
@@ -215,8 +215,7 @@ const Home = () => {
       dataIndex: 'noticeTime',
       key: 'noticeTime',
       width: 200,
-      render: noticeTime =>
-        moment(noticeTime).format('YYYY年MM月DD日 HH:mm:ss')
+      render: noticeTime => moment(noticeTime).format('YYYY年MM月DD日 HH:mm:ss')
     },
     {
       title: '提醒标题',
@@ -245,17 +244,13 @@ const Home = () => {
       title: '操作',
       dataIndex: '_id',
       key: '_id',
-      render: (id,data) => (
+      render: (id, data) => (
         <div>
-          <Button type="link" size="small" onClick={()=>edit(data)}>
+          <Button type="link" size="small" onClick={() => edit(data)}>
             <FormOutlined />
           </Button>
 
-          <Button
-            type="link"
-            size="small"
-            onClick={() => del(id)}
-          >
+          <Button type="link" size="small" onClick={() => del(id)}>
             <DeleteOutlined />
           </Button>
         </div>
@@ -264,27 +259,38 @@ const Home = () => {
   ];
 
   return (
-    <div>
-      <Button
-        type="primary"
-        onClick={() => {
-          setVisible(true);
-        }}
-      >
-         <PlusOutlined />
-            增加
-      </Button>
-      <Button
-        type="primary"
-        onClick={() => {
-            noticeService._doNotice({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5});
-        }}
-      >
-         <PlusOutlined />
-            弹窗
-      </Button>
+    <HomeWrapper>
+      <FeatureBox>
+        <Button
+          type="primary"
+          onClick={() => {
+            setVisible(true);
+          }}
+        >
+          <PlusOutlined />
+          增加
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            noticeService._doNotice({
+              noticeTitle: '标题',
+              noticeContent: '内容',
+              closeTime: 0.5
+            });
+          }}
+        >
+          <PlusOutlined />
+          弹窗
+        </Button>
+      </FeatureBox>
 
-      <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" />
+      <Table
+        columns={columns}
+        rowKey="_id"
+        dataSource={dataSource}
+        size="small"
+      />
 
       <CollectionCreateForm
         visible={visible}
@@ -292,10 +298,10 @@ const Home = () => {
         onCancel={() => {
           setVisible(false);
           setFormData(null);
-        }} 
+        }}
         formData={formData}
       />
-    </div>
+    </HomeWrapper>
   );
 };
-export default Home
+export default Home;

@@ -8,14 +8,16 @@ import {
 } from '@ant-design/icons';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
 import CaseManageModal from './components/CaseManageModal';
-const { Search } = Input;
 
 type Props = {
   incrementCase: (params) => void;
   caseList: [];
   deleteCase: (params) => void;
 };
+
 const { confirm } = Modal;
+const { Search } = Input;
+
 export default function CaseManage(props: Props) {
   const { incrementCase, caseList, deleteCase } = props;
   console.log(props);
@@ -48,8 +50,8 @@ export default function CaseManage(props: Props) {
     },
     {
       title: '结案日',
-      key: 'colsingDate',
-      dataIndex: 'colsingDate'
+      key: 'closingDate',
+      dataIndex: 'closingDate'
     },
     {
       title: '操作',
@@ -141,7 +143,6 @@ export default function CaseManage(props: Props) {
       >
         <CaseManageModal ref={childRef}></CaseManageModal>
       </Modal>
-
       <Table columns={columns} dataSource={caseList} />
     </CaseManageWrapper>
   );

@@ -17,7 +17,7 @@ interface INoticePO{
 }
 
 class NoticeService {
-
+    
     constructor() {
         this._initSchedule()
     }
