@@ -6,6 +6,7 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined
 } from '@ant-design/icons';
+import moment from 'moment';
 import servcie from '../../main_service/CaseService';
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
 import CaseManageModal from './components/CaseManageModal';
@@ -32,6 +33,7 @@ const { Search } = Input;
 export default function CaseManage(props: Props) {
   const { incrementCase, caseList, deleteCase } = props;
   const [visible, setVisible] = useState(false);
+
   const columns = [
     {
       title: '案件名称',
@@ -67,10 +69,10 @@ export default function CaseManage(props: Props) {
       title: '操作',
       dataIndex: '_id',
       key: '_id',
-      render: (id, props) => (
+      render: (id, data) => (
         <div>
           <Tooltip placement="bottom" title="编辑">
-            <Button type="link" size="small" onClick={() => editCase(id)}>
+            <Button type="link" size="small" onClick={() => editCase(id,data)}>
               <FormOutlined />
             </Button>
           </Tooltip>
@@ -90,17 +92,21 @@ export default function CaseManage(props: Props) {
   const addCase = () => {
     if (_childRef) {
       _childRef.value.validateFields().then(values => {
+     values.closingDate ? values.closingDate = values.closingDate.format('YYYY-MM-DD HH:mm:ss'):'';
         updateCasedb('', values as CaseItemType);
       });
     }
   };
 
-  const editCase = indx => {
+  const editCase = (id,data) => {
+    let { closingDate } = data;
     setVisible(true);
-    let _caseItem = caseList.filter((item, index) => index == indx);
     if (_childRef) {
       _childRef.value.resetFields();
-      _childRef.value.setFieldsValue(_caseItem[0]);
+      _childRef.value.setFieldsValue({
+        ...data,
+        closingDate:moment(closingDate,'YYYY-MM-DD HH:mm:ss')
+      });
     }
   };
 

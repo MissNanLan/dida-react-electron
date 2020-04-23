@@ -323,8 +323,7 @@ const Coordination = () => {
   ];
 
   const timeIndex = ['requireReplyTime','receiveTime','replyReceiveTime']
-
-
+  
   const mergedColumns = columns.map(col => {
     if (!col.editable) {
       return col;
