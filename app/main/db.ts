@@ -13,7 +13,8 @@ const dbFactory = (fileName) => Datastore.create({
 });
 const db = {
     notice: dbFactory('notice.db'),
-    case: dbFactory('case.db')
+    case: dbFactory('case.db'),
+    coordination:dbFactory('coordinaton.db')
 };
 
 export default db
