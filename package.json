@@ -54,8 +54,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "稽查小助手",
+    "appId": "com.weylan.ElectronReact",
     "files": [
       "dist/",
       "node_modules/",
@@ -81,11 +81,26 @@
         }
       ]
     },
+    "mac": {
+      "icon": "resources/icon.icns"
+    },
     "win": {
       "target": [
         "nsis",
         "msi"
-      ]
+      ],
+      "icon": "resources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/del.ico",
+      "installerHeaderIcon": "resources/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "稽查小助手"
     },
     "linux": {
       "target": [
