@@ -57,24 +57,24 @@ export default function CaseManage(props: Props) {
   ];
 
   const data = [
-    {
-      key: '1',
-      caseName: '案件名称',
-      primaryChecker: '蒋小姐',
-      viceChecker: '石先生',
-      interrogator: '胖胖',
-      checkDate: '2020-04-13',
-      colsingDate: '2020-04-13'
-    },
-    {
-      key: '2',
-      caseName: '案件名称',
-      primaryChecker: '蒋小姐',
-      viceChecker: '石先生',
-      interrogator: '胖胖',
-      checkDate: '2020-04-13',
-      colsingDate: '2020-04-13'
-    }
+    // {
+    //   key: '1',
+    //   caseName: '案件名称',
+    //   primaryChecker: '蒋小姐',
+    //   viceChecker: '石先生',
+    //   interrogator: '胖胖',
+    //   checkDate: '2020-04-13',
+    //   colsingDate: '2020-04-13'
+    // },
+    // {
+    //   key: '2',
+    //   caseName: '案件名称',
+    //   primaryChecker: '蒋小姐',
+    //   viceChecker: '石先生',
+    //   interrogator: '胖胖',
+    //   checkDate: '2020-04-13',
+    //   colsingDate: '2020-04-13'
+    // }
   ];
 
   return (

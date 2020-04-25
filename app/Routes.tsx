@@ -10,10 +10,9 @@ export default function Routes() {
   return (
     <Main>
       <Switch>
-      <Route path={routes.COORDINATION} component={Coordination}/>
+        <Route path={routes.COORDINATION} component={Coordination}/>
         <Route path={routes.CASEMANAGE} component={CaseManagePage} />
         <Route path={routes.HOME} component={HomePage} />
-     
       </Switch>
     </Main>
   );

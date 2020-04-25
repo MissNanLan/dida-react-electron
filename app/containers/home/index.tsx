@@ -61,7 +61,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
           .validateFields()
           .then(values => {
             form.resetFields();
-            onCreate(values);
+            onCreate(values as Values);
           })
           .catch(info => {
             console.log('Validate Failed:', info);
@@ -163,7 +163,7 @@ const Home = () => {
 
   const listData = async ()=>{
     let docs = await noticeService.list();
-    setDataSource(docs)
+    setDataSource(docs as never[])
   }
 
   const saveData = async (data)=>{
@@ -265,34 +265,19 @@ const Home = () => {
 
   return (
     <div>
-      <Button
-        type="primary"
-        onClick={() => {
-          setVisible(true);
-        }}
-      >
-         <PlusOutlined />
-            增加
+      <div style={{margin:16}}>
+      <Button type="primary" onClick={() => {setVisible(true);}}>
+         <PlusOutlined />增加
       </Button>
-      <Button
-        type="primary"
+      {/* <Button type="primary"
         onClick={() => {
             noticeService._doNotice({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5});
-        }}
-      >
-         <PlusOutlined />
-            弹窗
-      </Button>
-
+        }}>
+         <PlusOutlined />弹窗
+      </Button> */}
+      </div>
       <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" />
-
-      <CollectionCreateForm
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={() => {
-          setVisible(false);
-          setFormData(null);
-        }} 
+      <CollectionCreateForm visible={visible} onCreate={onCreate} onCancel={() => {setVisible(false);setFormData(null);}} 
         formData={formData}
       />
     </div>

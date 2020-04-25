@@ -363,6 +363,7 @@ const Coordination = () => {
           }}
           style={{width:'100%'}}
           rowKey="_id"
+          size="small"
         />
         <CollectionCreateForm
           visible={visible}
