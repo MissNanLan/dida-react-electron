@@ -36,7 +36,7 @@
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-watch": "yarn test --watch",
     "build-dialog": "webpack --config ./configs/webpack.config.html.js --mode production",
-    "build-dialog-dev":"cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.html.js --hot"
+    "build-dialog-dev": "cross-env NODE_ENV=development webpack-dev-server --config ./configs/webpack.config.html.js --hot"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -65,7 +65,6 @@
       "main.prod.js",
       "main.prod.js.map",
       "package.json"
-
     ],
     "dmg": {
       "contents": [
@@ -289,6 +288,7 @@
     "testcafe-react-selectors": "^4.0.0",
     "typed-css-modules-webpack-plugin": "^0.1.2",
     "typescript": "^3.7.5",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "^3.0.0",
     "webpack": "^4.41.5",
     "webpack-bundle-analyzer": "^3.6.0",

@@ -269,12 +269,12 @@ const Home = () => {
       <Button type="primary" onClick={() => {setVisible(true);}}>
          <PlusOutlined />增加
       </Button>
-      {/* <Button type="primary"
+      <Button type="primary"
         onClick={() => {
-            noticeService._doNotice({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5});
+            noticeService.notice(JSON.stringify({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5}));
         }}>
          <PlusOutlined />弹窗
-      </Button> */}
+      </Button>
       </div>
       <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" />
       <CollectionCreateForm visible={visible} onCreate={onCreate} onCancel={() => {setVisible(false);setFormData(null);}} 
