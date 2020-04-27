@@ -1,9 +1,12 @@
 import React, { useState,useEffect } from 'react';
-import { Table, Input,Button, Popconfirm, Form,Modal ,DatePicker} from 'antd';
+import { Table, Input,Button, Popconfirm, Form,Modal ,DatePicker,Row,Col} from 'antd';
 import moment from 'moment';
-import { PlusOutlined,FormOutlined, DeleteOutlined } from '@ant-design/icons';
-
+import { PlusOutlined,FormOutlined, DeleteOutlined,DownloadOutlined,QuestionCircleOutlined } from '@ant-design/icons';
+import {  SearchBox, FeatureBox } from './style';
 import servcie from '../../main_service/CoordinationService'
+import { ColumnsType } from 'antd/lib/table';
+const { Search } = Input;
+const { confirm } = Modal;
 
 interface Values {
   title: string;
@@ -155,9 +158,9 @@ const Coordination = () => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [current,setCurrent] = useState(1)
-  const [pageSize,setPageSize] = useState(6)
-
+  const [pageSize,setPageSize] = useState(10)
   const [visible, setVisible] = useState(false);
+  const [selectRow,setSelectRow] = useState([])
 
   const isEditing = record => record._id === editingKey;
 
@@ -165,8 +168,8 @@ const Coordination = () => {
     list()
   },[])
 
-  const list = async ()=>{
-    const docList = await servcie.list()
+  const list = async (word:string='')=>{
+    const docList = await servcie.list(word)
     setData(docList as never[])
   }
 
@@ -216,73 +219,104 @@ const Coordination = () => {
     await servcie.del(id)
     await list()
   }
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectRow(selectedRows)
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    }
+  };
+  const download = ()=>{
+    if(selectRow.length>0){
+      doDownlod(false)
+      return    
+    }
+    confirm({
+      title: '确认导出全部数据?',
+      icon: <QuestionCircleOutlined />,
+      onOk() {
+        doDownlod(true)
+      },
+      onCancel() {
+        
+      },
+    })
+  }
+  const doDownlod= async (isAll:Boolean)=>{
+      await servcie.downlod(selectRow,isAll)
+  }
 
+  const search = async (words:string)=>{
+    await list(words)
+  }
 
   const columns = [
     {
         title: '序号',
-        width: '1%',
+        width: 50,
         render:(text,record,index)=>`${((current-1)*10)+(index+1)}`,
         dataIndex:'_id',
+        fixed: 'left',
     },
     {
       title: '协查编号',
       dataIndex: 'number',
-      width: '12%',
+      width: 180,
       editable: true,
+      fixed: 'left',
     },
     {
         title: '问题类型',
         dataIndex: 'type',
-        width: '10%',
+        width: 150,
         editable: true,
     },
     {
         title: '涉及纳税人',
         dataIndex: 'taxpayer',
-        width: '10%',
+        width: 200,
         editable: true,
     },
     {
         title: '转办部门',
         dataIndex: 'department',
-        width: '10%',
+        width: 100,
         editable: true,
     },
     {
         title: '要求回函时间',
         dataIndex: 'requireReplyTime',
-        width: '10%',
+        width: 190,
         editable: true,
     },
     {
         title: '接收人',
         dataIndex: 'receiver',
-        width: '10%',
+        width: 80,
         editable: true,
     },
     {
         title: '接收时间',
         dataIndex: 'receiveTime',
-        width: '10%',
+        width: 190,
         editable: true,
     },
     {
         title: '回函接收人',
         dataIndex: 'replyReceiver',
-        width: '10%',
+        width: 80,
         editable: true,
     },
     {
         title: '接收时间',
         dataIndex: 'replyReceiveTime',
-        width: '10%',
+        width: 190,
         editable: true
     },
     {
       title: '操作',
       dataIndex: '_id',
-      width: '7%',
+      width: 90,
+      fixed: 'right',
       render: (id, record) => {
         const editable = isEditing(record);
         return editable ? (
@@ -335,13 +369,34 @@ const Coordination = () => {
   });
   
   return (
-    <div style={{overflow:'auto'}}>
+    <div style={{overflow:'auto',backgroundColor:'#fff'}}>
+      <SearchBox>
+        <Row gutter={16}>
+          <Col className="gutter-row" span={7}>
+            <Search
+              placeholder="请输入协查编号"
+              enterButton="搜索"
+              onSearch={value => search(value)}
+            />
+          </Col>
+        </Row>
+      </SearchBox>
+      <FeatureBox>
+        <Button type="primary" onClick={() => {setVisible(true);}}>
+          <PlusOutlined />
+          新增
+        </Button>
+        <Button  style={{marginLeft:'8px'}} onClick={() => {download();}}>
+          <DownloadOutlined />
+          导出
+        </Button>
+      </FeatureBox>
         <Form form={form} component={false}>
-        <div style={{margin:16}}>
+        {/* <div style={{margin:16}}>
           <Button type="primary" onClick={() => {setVisible(true);}}>
             <PlusOutlined />增加
           </Button>
-        </div>
+        </div> */}
         <Table
           components={{
             body: {
@@ -350,8 +405,9 @@ const Coordination = () => {
           }}
           bordered
           dataSource={data}
-          columns={mergedColumns}
+          columns={mergedColumns as ColumnsType<object>}
           rowClassName="editable-row"
+          rowSelection={rowSelection}
           pagination={{
             onChange: (page)=>{setCurrent(page)},
             current:current,
@@ -364,6 +420,7 @@ const Coordination = () => {
           style={{width:'100%'}}
           rowKey="_id"
           size="small"
+          scroll={{ x: 1800, y: 628 }} 
         />
         <CollectionCreateForm
           visible={visible}

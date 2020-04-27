@@ -4,6 +4,7 @@ import noticeSchedule from './NoticeSchedule'
 import {NoticeDto} from './NoticeSchedule'
 
 const db = electron.remote.getGlobal('db')
+console.log(db)
 const noticeDb:Datastore = db.notice
 
 interface INoticePO{

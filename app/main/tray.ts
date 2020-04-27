@@ -15,7 +15,7 @@ export default class TrayBuilder{
     constructor(mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
         const iconName = process.platform === 'win32' ? 'static/icon.ico' : 'static/icon.png'
-        tray = new Tray(path.join(__dirname, iconName));
+        tray = new Tray(path.join(global['__dirname'] , iconName));
     }
 
     buildTray(){

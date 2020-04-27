@@ -194,19 +194,43 @@ export default class MenuBuilder {
   }
 
   buildDefaultTemplate() {
+    const {mainWindow}=this
     const templateDefault = [
       {
-        label: '&File',
-        submenu: [
+        label: '设置',
+        submenu:[
           {
-            label: '&Open',
-            accelerator: 'Ctrl+O'
+            type : 'checkbox',
+            label: '开机启动',
+            checked : app.getLoginItemSettings().openAtLogin,
+            click : function () {
+              if(!app.isPackaged){
+                app.setLoginItemSettings({
+                  openAtLogin: !app.getLoginItemSettings().openAtLogin,
+                  path: process.execPath
+                })
+              }else{
+                app.setLoginItemSettings({
+                  openAtLogin: !app.getLoginItemSettings().openAtLogin
+                })
+              }
+              console.log(app.getLoginItemSettings().openAtLogin)
+              console.log(!app.isPackaged);
+      
+            }
           },
           {
-            label: '&Close',
-            accelerator: 'Ctrl+W',
-            click: () => {
-              this.mainWindow.close();
+            type : 'checkbox',
+            label: '显示菜单栏',
+            checked : this.mainWindow.isMenuBarVisible(),
+            click : function () {
+              if(!mainWindow.isMenuBarVisible()){
+                mainWindow.setMenuBarVisibility(true)
+              }else{
+                mainWindow.setMenuBarVisibility(false)
+              
+              }
+              console.log(mainWindow.isMenuBarVisible())
             }
           }
         ]
@@ -243,7 +267,7 @@ export default class MenuBuilder {
               ]
             : [
                 {
-                  label: 'Toggle &Full Screen',
+                  label: '全屏',
                   accelerator: 'F11',
                   click: () => {
                     this.mainWindow.setFullScreen(
@@ -254,16 +278,16 @@ export default class MenuBuilder {
               ]
       },
       {
-        label: 'Help',
+        label: '帮助',
         submenu: [
           {
-            label: 'Learn More',
+            label: '关于',
             click() {
               shell.openExternal('https://electronjs.org');
             }
           },
           {
-            label: 'Documentation',
+            label: '使用介绍',
             click() {
               shell.openExternal(
                 'https://github.com/electron/electron/tree/master/docs#readme'
@@ -271,15 +295,11 @@ export default class MenuBuilder {
             }
           },
           {
-            label: 'Community Discussions',
+            label: '免责声明',
             click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            }
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              shell.openExternal(
+                'https://github.com/electron/electron/tree/master/docs#readme'
+              );
             }
           }
         ]
