@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
   "scripts": {
-    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\" \"yarn build-dialog\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
     "build-e2e": "cross-env E2E_BUILD=true yarn build",
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
@@ -85,8 +85,7 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "msi"
+
       ],
       "icon": "resources/icon.ico"
     },
@@ -95,11 +94,13 @@
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "resources/icon.ico",
-      "uninstallerIcon": "resources/del.ico",
+      "uninstallerIcon": "resources/icon.ico",
       "installerHeaderIcon": "resources/icon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "稽查小助手"
+      "shortcutName": "稽查小助手",
+      "uninstallDisplayName":"稽查小助手",
+      "include":"resources/installer.nsh"
     },
     "linux": {
       "target": [
