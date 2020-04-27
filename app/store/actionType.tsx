@@ -1,8 +1,7 @@
 
 
 const constant = {
-    INCREMENTCASE: 'caseManage/incrementCase',
-    DELETECASE: 'caseManage/deleteCase'
+    UPDATECASE: 'caseManage/updateCase',
 }
 
 export default constant

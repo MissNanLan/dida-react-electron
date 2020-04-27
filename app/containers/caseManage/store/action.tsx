@@ -1,15 +1,9 @@
 import constants from '../../../store/actionType';
 
-export function incrementCase(payload) {
+export function updateCase(payload) {
   return {
-    type: constants.INCREMENTCASE,
+    type: constants.UPDATECASE,
     payload
   };
 }
 
-export function deleteCase(payload) {
-  return {
-    type: constants.DELETECASE,
-    payload
-  };
-}

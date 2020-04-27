@@ -1,7 +1,7 @@
 import { Dispatch as ReduxDispatch, Store as ReduxStore, Action } from 'redux';
 
 export type caseManageStateType = {
-  caseList: [{ caseName: 'sss' }];
+  caseList: [];
 };
 
 export type Dispatch = ReduxDispatch<Action<string>>;

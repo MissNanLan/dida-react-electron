@@ -1,8 +1,8 @@
 // import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import CaseManage from '../index';
-import { incrementCase,deleteCase } from '../store/action';
-import { GetState, Dispatch } from '../../../store/types';
+import { updateCase } from '../store/action';
+import {  Dispatch } from '../../../store/types';
 
 function mapStateToProps(state) {
   return {
@@ -10,15 +10,10 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch, getState:GetState) {
-  // const { caseList } = getState;
-  console.log(getState);
+function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    incrementCase(payload) {
-      dispatch(incrementCase(payload))
-    },
-    deleteCase(payload){
-      dispatch(deleteCase(payload))
+    updateCase(payload) {
+      dispatch(updateCase(payload))
     }
   };
 }

@@ -18,11 +18,13 @@ type CasePO = {
 class CaseManageService {
    
     insert = async (doc:CasePO)=>{
-        console.log(doc);
         return await caseManageDb.insert(doc)
      }
-     list = async ()=>{
-        return await caseManageDb.find({}).sort({"createdAt.$$date":-1})
+     list = async (keyword:string)=>{
+        const reg = new RegExp(`${keyword}`, "i");
+        console.log(reg);
+        let arr =  await caseManageDb.find({})
+         return arr
      }
      del = async (id:string)=>{
         return  await caseManageDb.remove({"_id": id},{multi:false})
