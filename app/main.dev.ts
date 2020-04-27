@@ -15,7 +15,9 @@ import log from 'electron-log';
 import MenuBuilder from './main/menu';
 import MessageBuilder from './main/event/message'
 import db from './main/db'
+import TrayBuilder from './main/tray';
 
+global['__dirname'] = __dirname;
 
 export default class AppUpdater {
   constructor() {
@@ -61,7 +63,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
-    autoHideMenuBar:true,
+    icon:path.join(__dirname, 'static/icon.ico'),
     webPreferences:
       process.env.NODE_ENV === 'development' || process.env.E2E_BUILD === 'true'
         ? {
@@ -87,7 +89,7 @@ const createWindow = async () => {
       mainWindow.focus();
     }
   });
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -95,8 +97,20 @@ const createWindow = async () => {
 
   new MenuBuilder(mainWindow).buildMenu();
   new MessageBuilder(mainWindow).handleMessage();
+  new TrayBuilder(mainWindow).buildTray()
 
   global['db'] = db
+
+  if (process.platform === 'win32') {
+    mainWindow.on('close', (e) => {
+      // 取消引用 window 对象
+      if(mainWindow!=null){
+        mainWindow.hide();
+        mainWindow.setSkipTaskbar(true)
+      }
+      e.preventDefault();
+    })
+  }
 
 
   // Remove this if your app does not use auto updates
@@ -123,3 +137,17 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
+
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 当运行第二个实例时,将会聚焦到mainWindow这个窗口
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+      mainWindow.show()
+    }
+  })
+}

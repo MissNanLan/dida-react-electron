@@ -34,12 +34,13 @@ export default class MessageBuilder{
             win.on('close', () => { win = null })
             let proUrl = `file://${__dirname}/dist/dialog/index.html`
             let devUrl = `http://localhost:9000/dialog/index.html`
+            
             let url = `${process.env.NODE_ENV === 'development' ?devUrl:proUrl}`
             win.loadURL(url);
             win.webContents.on('did-finish-load', function(){
                 if(win) win.webContents.send('dataJsonPort', data);
             });
-            win.webContents.openDevTools()
+            // win.webContents.openDevTools()
         })
     }
     closeNoticeWindow(){

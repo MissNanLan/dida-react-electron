@@ -4,7 +4,7 @@ import Datastore from 'nedb-promises';
 
 app.getAppPath();
     
-const p = path.resolve(`${process.resourcesPath}/../bin/`);
+const p = path.resolve(`${process.resourcesPath}`);
 
 const dbFactory = (fileName) => Datastore.create({
   filename: `${process.env.NODE_ENV === 'development' ?'.' : p}/data/${fileName}`, 

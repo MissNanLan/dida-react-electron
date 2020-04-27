@@ -1,9 +1,10 @@
-import schedule from 'node-schedule';
 import electron from 'electron';
 import Datastore from 'nedb-promises';
-const { ipcRenderer } = electron;
+import noticeSchedule from './NoticeSchedule'
+import {NoticeDto} from './NoticeSchedule'
 
 const db = electron.remote.getGlobal('db')
+console.log(db)
 const noticeDb:Datastore = db.notice
 
 interface INoticePO{
@@ -30,44 +31,10 @@ class NoticeService {
     _queryAllValidNotice = async() => {
         let noticeList = await noticeDb.find({
             status: 1,
-            isDel: false 
+            isDel: false,
+            // noticeTime: { $gte : new Date()}
         })
-        noticeList.forEach(notice => {
-            this._convertNotice(notice)
-        })
-    }
-     // 将通知转换成通知事件
-     _convertNotice(notice) {
-        let rule = this._convertDate2Corn(notice.noticeTime, notice.noticeType);
-        if (!rule) return
-        console.log(rule)
-        let job = schedule.scheduleJob(rule, () => {
-            this._doNotice(notice)
-        })
-        this._jobStore["" + notice._id] = job
-    }
-    _convertDate2Corn(date, type) {
-        let week = date.getDay()
-        let M = date.getMonth() + 1
-        let d = date.getDate()
-        let h = date.getHours()
-        let m = date.getMinutes()
-        let s = date.getSeconds()
-        switch (type) {
-            case 0: // 一次
-                return date
-            case 1: // 每天
-                return `${s} ${m} ${h} ${d}/1 * ?`
-            case 2: // 每周
-                return `${s} ${m} ${h} ? * ${week + 1}`
-            case 3: // 每月
-                return `${s} ${m} ${h} ${d} ${M}/1 ?`
-            default:
-                return '';
-        }
-    }// 具体通知内容
-    _doNotice = (notice:INoticePO|any = null) => {
-        ipcRenderer.send('create-notice-window', notice);
+        noticeSchedule.batchCreateNotice(noticeList as NoticeDto[])
     }
     insert = async(document) => {
        let  noticePO:INoticePO = {
@@ -82,12 +49,12 @@ class NoticeService {
         Object.assign(noticePO,document);
         noticePO.noticeTime = document.noticeTime.toDate()
         let res = await noticeDb.insert(noticePO)
-        this._convertNotice(noticePO)
+        noticeSchedule.createNotice(res as NoticeDto)
         return res
     }
     update = async (notice) => {
         notice.noticeTime = notice.noticeTime.toDate()
-        await noticeDb.update({_id:notice._id},{$set:notice},{multi:false})
+        await noticeDb.update({'_id':notice._id},notice,{upsert:false,multi:false,returnUpdatedDocs:true})
     }
     list = async () => {
       let dbDoc =  await noticeDb.find({}).sort({"noticeTime":1})
@@ -96,17 +63,12 @@ class NoticeService {
     }
     del = async(id:string) => {
         await noticeDb.remove({"_id": id},{multi:false})
-        let job = this._jobStore["" + id]
-        if(job){
-            job.cancel()
-        }
+        noticeSchedule.delNotice(id)
     }
 
     notice = (messag:string) => {
-        this._doNotice(messag)
+        noticeSchedule._doNotice(messag)
     }
-
-
 
     getInfo(id){
         return 'this is from '+id

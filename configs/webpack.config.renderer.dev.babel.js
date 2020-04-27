@@ -150,7 +150,7 @@ export default merge.smart(baseConfig, {
             loader: 'less-loader',
             options: {
               modifyVars: {
-                'primary-color': '#61BFAD'
+                'primary-color': '#2a9af3'
               },
               javascriptEnabled: true
             }
