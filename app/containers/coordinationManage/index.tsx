@@ -14,9 +14,16 @@ const { confirm } = Modal;
 
 
 interface Values {
-  title: string;
-  description: string;
-  modifier: string;
+  _id?: string
+  number?: string
+  type?:string
+  taxpayer?: string
+  department?: string
+  requireReplyTime?: string
+  receiver?: string
+  receiveTime?: string
+  replyReceiver?: string
+  replyReceiveTime?: string
 }
 
 interface CollectionCreateFormProps {
@@ -355,8 +362,7 @@ const Coordination = () => {
   ];
 
   const timeIndex = ['requireReplyTime','receiveTime','replyReceiveTime']
-
-
+  
   const mergedColumns = columns.map(col => {
     if (!col.editable) {
       return col;

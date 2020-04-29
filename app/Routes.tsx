@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import Main from './components/Main';
 import routes from './constants/routes.json';
 import HomePage from './containers/home/index';
-import CaseManagePage from './containers/caseManage/index';
+import CaseManagePage from './containers/caseManage/store/store';
 import Coordination from './containers/coordinationManage/index'
 
 export default function Routes() {

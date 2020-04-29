@@ -1,12 +1,50 @@
-import React from 'react';
-import { Table, Input, Button, Row, Col } from 'antd';
-import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useRef, useEffect } from 'react';
+import { Table, Input, Button, Row, Col, Modal, Tooltip } from 'antd';
+import {
+  PlusOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
+import moment from 'moment';
+
 import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
+import CaseManageModal from './components/CaseManageModal';
+
+import electron from 'electron';
+const servcie = electron.remote.getGlobal('caseManageService')
+
+
+// import electron from 'electron';
+// import Datastore from 'nedb-promises';
+
+// const db = electron.remote.getGlobal('db')
+// const caseManageDb:Datastore = db.case
+
+type Props = {
+  updateCase: (params) => void;
+  caseList: [];
+};
+
+type CaseItemType = {
+  _id?: string;
+  caseName?: string;
+  primaryChecker?: string;
+  viceChecker?: string;
+  interrogator?: string;
+  checkDate?: string;
+  closingDate?: Date;
+};
+
+const { confirm } = Modal;
 const { Search } = Input;
 
-type Props = {};
-
 export default function CaseManage(props: Props) {
+  const { updateCase, caseList } = props;
+  const [visible, setVisible] = useState(false);
+  const [id, setCaseId] = useState('');
+  const [caseName, setSearchName] = useState('');
+
   const columns = [
     {
       title: '案件名称',
@@ -35,27 +73,117 @@ export default function CaseManage(props: Props) {
     },
     {
       title: '结案日',
-      key: 'colsingDate',
-      dataIndex: 'colsingDate'
+      key: 'closingDate',
+      dataIndex: 'closingDate'
     },
     {
       title: '操作',
       dataIndex: '_id',
       key: '_id',
-      render: () => (
+      render: (id, data) => (
         <div>
-          <Button type="link" size="small">
-            <FormOutlined />
-          </Button>
+          <Tooltip placement="bottom" title="编辑">
+            <Button type="link" size="small" onClick={() => editCase(id, data)}>
+              <FormOutlined />
+            </Button>
+          </Tooltip>
 
-          <Button  type="link" size="small">
-            <DeleteOutlined />
-          </Button>
+          <Tooltip placement="bottom" title="删除">
+            <Button type="link" size="small" onClick={() => delCase(id)}>
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
         </div>
       )
     }
   ];
+  const childRef = useRef();
+  let _childRef = childRef.current;
 
+  const saveCase = () => {
+    if (_childRef) {
+      _childRef.value.validateFields().then(values => {
+        values.closingDate
+          ? (values.closingDate = values.closingDate.format(
+              'YYYY-MM-DD HH:mm:ss'
+            ))
+          : '';
+        updateCasedb(id, values as CaseItemType);
+      });
+    }
+  };
+
+  const editCase = (id, data) => {
+    let { closingDate } = data;
+    setCaseId(id);
+    setVisible(true);
+    if (_childRef) {
+      _childRef.value.resetFields();
+      _childRef.value.setFieldsValue({
+        ...data,
+        closingDate: moment(closingDate, 'YYYY-MM-DD HH:mm:ss')
+      });
+    }
+  };
+
+  const delCase = async id => {
+    confirm({
+      title: '你确定删除吗',
+      icon: <ExclamationCircleOutlined />,
+      onOk: async () => {
+        await servcie.del(id);
+        await list(caseName);
+        setVisible(false);
+      },
+      onCancel() {}
+    });
+  };
+
+  const updateCasedb = async (id: string, values: CaseItemType) => {
+    if (id) {
+      await servcie.update(id, values);
+    } else {
+      delete values._id;
+      await servcie.insert(values);
+    }
+    await list(caseName);
+    setVisible(false);
+  };
+
+  const addCase = () => {
+    setVisible(true);
+    setCaseId('');
+    if (_childRef) {
+      _childRef.value.resetFields();
+    }
+  };
+
+  const onSearch = async value => {
+    setSearchName(caseName);
+    await list(value);
+  };
+
+  useEffect(() => {
+    list(caseName);
+  }, []);
+
+  const list = async caseName => {
+    const caseList = await servcie.list(caseName);
+    updateCase(caseList);
+  };
+
+//   const list1 =  (keyword:string)=>{
+//     return new Promise((resolve,reject)=>{
+//       const reg =  new RegExp(`${keyword}`, "i");
+//       caseManageDb.find({ caseName: 'ar' }, function (err, docs) {
+//          if(err){
+//           reject(err)
+//          }else {
+//            resolve(docs)
+//          }
+//       });
+//     })
+//  }
   const data = [
     // {
     //   key: '1',
@@ -82,21 +210,30 @@ export default function CaseManage(props: Props) {
       <SearchBox>
         <Row gutter={16}>
           <Col className="gutter-row" span={7}>
-            <Search
+          <Search
               placeholder="请输入案件名称"
-              enterButton="搜索"
-              onSearch={value => console.log(value)}
+              onSearch={value => onSearch(value)}
             />
           </Col>
         </Row>
       </SearchBox>
       <FeatureBox>
-        <Button type="primary">
+        <Button type="primary" onClick={() => addCase()}>
           <PlusOutlined />
           增加
         </Button>
       </FeatureBox>
-      <Table columns={columns} dataSource={data} />
+      <Modal
+        title="新增案件"
+        visible={visible}
+        onOk={() => saveCase()}
+        onCancel={() => setVisible(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <CaseManageModal ref={childRef}></CaseManageModal>
+      </Modal>
+      <Table columns={columns} dataSource={caseList} rowKey='_id' bordered  size="small"/>
     </CaseManageWrapper>
   );
 }
