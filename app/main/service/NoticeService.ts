@@ -1,4 +1,4 @@
-import db from '../db'
+import db from '../protect/db'
 import Datastore from 'nedb-promises';
 import noticeSchedule from './NoticeSchedule'
 import {NoticeDto} from './NoticeSchedule'

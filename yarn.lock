@@ -3976,6 +3976,11 @@ bl@^1.0.0:
     readable-stream "^2.3.5"
     safe-buffer "^5.1.1"
 
+blob-polyfill@^4.0.20190430:
+  version "4.0.20190430"
+  resolved "https://registry.npm.taobao.org/blob-polyfill/download/blob-polyfill-4.0.20190430.tgz#b7e1f2e8e8f9733a89416f35d436de4e2f5c9661"
+  integrity sha1-t+Hy6Oj5czqJQW811DbeTi9clmE=
+
 block-stream@*:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/block-stream/-/block-stream-0.0.9.tgz#13ebfe778a03205cfe03751481ebb4b3300c126a"
@@ -5309,6 +5314,14 @@ cron-parser@^2.7.3:
   dependencies:
     is-nan "^1.2.1"
     moment-timezone "^0.5.25"
+
+cross-blob@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npm.taobao.org/cross-blob/download/cross-blob-1.2.2.tgz#a30460444d28ce55e0041b9d3a6bc91019eebbcb"
+  integrity sha1-owRgRE0ozlXgBBudOmvJEBnuu8s=
+  dependencies:
+    blob-polyfill "^4.0.20190430"
+    fetch-blob "^1.0.5"
 
 cross-env@^7.0.0:
   version "7.0.0"
@@ -7281,6 +7294,11 @@ fd-slicer@~1.0.1:
   integrity sha1-i1vL2ewyfFBBv5qwI/1nUPEXfmU=
   dependencies:
     pend "~1.2.0"
+
+fetch-blob@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.npm.taobao.org/fetch-blob/download/fetch-blob-1.0.5.tgz#5cc86a8740236c38d8073b153c8b51be5f3dc11e"
+  integrity sha1-XMhqh0AjbDjYBzsVPItRvl89wR4=
 
 figgy-pudding@^3.5.1:
   version "3.5.1"

@@ -12,11 +12,11 @@ import path from 'path';
 import { app, BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './main/menu';
+import MenuBuilder from './main/protect/menu';
 import MessageBuilder from './main/event/message'
 import ServiceBuilder from './main/service/ServiceBuilder'
-import db from './main/db'
-import TrayBuilder from './main/tray';
+import db from './main/protect/db'
+import TrayBuilder from './main/protect/tray';
 
 global['__dirname'] = __dirname;
 

@@ -1,7 +1,8 @@
 import Datastore from 'nedb-promises';
-import db from '../db'
-import FileSaver from 'file-saver'
+import db from '../protect/db'
 import XLSX from 'xlsx'
+import excelUtils from '../utils/excel-utils'
+import { dialog } from  'electron'
 
 const coordinationDb:Datastore = db.coordination
 
@@ -33,6 +34,18 @@ const excleTitles = {
     replyReceiveTime: '接收时间',
 }
 
+const excelColStype = [
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+    { wch: 22 },
+]
+
 class CoordinationService{
 
 
@@ -52,21 +65,14 @@ class CoordinationService{
         return coordinationDb.update({'_id':id},doc,{upsert:false,multi:false,returnUpdatedDocs:true})
     } 
     downlod =  async(selectRow:CoordPO[],isAll:Boolean=false)=>{
-        let wb =  XLSX.utils.book_new() 
+        let path = await dialog.showSaveDialog({title:'协查记录导出',defaultPath:'协查记录'})
+        if(!path.filePath){
+            return 
+        }
         if(isAll){
             selectRow = await this.list() as CoordPO[]
         }
-        let ws = this._createWs(selectRow,excleFields,excleTitles)
-        this._handleWsStyle(ws)
-        XLSX.utils.book_append_sheet(wb,ws)
-        let wbout = XLSX.write(wb,{bookType: 'xlsx', bookSST: true, type: 'array'})
-        try {
-            FileSaver.saveAs(new Blob([wbout], {type: 'application/octet-stream'}), '导出数据.xlsx');
-        } catch (e) {
-            if (typeof console !== 'undefined'){
-                console.log(e, wbout)
-            }
-        }
+        excelUtils.json2ExcelAndDownload(selectRow,path.filePath,excleFields,excleTitles,excelColStype)
     }
     _createWs = (data:CoordPO[],fields:string[],titles:any)=>{
         const ws = XLSX.utils.json_to_sheet(data, { header: fields})

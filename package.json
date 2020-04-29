@@ -304,6 +304,7 @@
     "antd": "^4.1.1",
     "connected-react-router": "^6.6.1",
     "core-js": "^3.6.4",
+    "cross-blob": "^1.2.2",
     "devtron": "^1.4.0",
     "electron-debug": "^3.0.1",
     "electron-log": "^4.0.6",
