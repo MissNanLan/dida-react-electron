@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './main/menu';
 import MessageBuilder from './main/event/message'
+import ServiceBuilder from './main/service/ServiceBuilder'
 import db from './main/db'
 import TrayBuilder from './main/tray';
 
@@ -98,6 +99,7 @@ const createWindow = async () => {
   new MenuBuilder(mainWindow).buildMenu();
   new MessageBuilder(mainWindow).handleMessage();
   new TrayBuilder(mainWindow).buildTray()
+  new ServiceBuilder()
 
   global['db'] = db
 

@@ -1,10 +1,9 @@
-import electron from 'electron';
+import db from '../db'
 import Datastore from 'nedb-promises';
 import noticeSchedule from './NoticeSchedule'
 import {NoticeDto} from './NoticeSchedule'
 
-const db = electron.remote.getGlobal('db')
-console.log(db)
+
 const noticeDb:Datastore = db.notice
 
 interface INoticePO{
@@ -75,4 +74,4 @@ class NoticeService {
     }
 }
 
-export default new NoticeService()
+export default NoticeService

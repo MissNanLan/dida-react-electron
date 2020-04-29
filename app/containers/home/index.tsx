@@ -1,9 +1,12 @@
 import React, { useState,useEffect } from 'react';
 import moment from 'moment';
-import { Button, Modal, Form, Input, Radio,Table,Popover,Select,DatePicker,InputNumber } from 'antd';
+import { Button, Modal, Form, Input,Table,Popover,Select,DatePicker,InputNumber } from 'antd';
 import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
 
-import noticeService from '../../main_service/NoticeService';
+
+import electron from 'electron';
+const noticeService = electron.remote.getGlobal('noticeService')
+
 
 interface Values {
   title: string;

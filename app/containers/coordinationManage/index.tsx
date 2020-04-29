@@ -3,10 +3,15 @@ import { Table, Input,Button, Popconfirm, Form,Modal ,DatePicker,Row,Col} from '
 import moment from 'moment';
 import { PlusOutlined,FormOutlined, DeleteOutlined,DownloadOutlined,QuestionCircleOutlined } from '@ant-design/icons';
 import {  SearchBox, FeatureBox } from './style';
-import servcie from '../../main_service/CoordinationService'
+
 import { ColumnsType } from 'antd/lib/table';
+
+import electron from 'electron';
+const servcie = electron.remote.getGlobal('coordinationService')
+
 const { Search } = Input;
 const { confirm } = Modal;
+
 
 interface Values {
   title: string;

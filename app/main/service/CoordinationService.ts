@@ -1,11 +1,10 @@
-import electron from 'electron';
 import Datastore from 'nedb-promises';
+import db from '../db'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
-
-const db = electron.remote.getGlobal('db')
 const coordinationDb:Datastore = db.coordination
+
 
 class CoordPO  {
     _id?: string
@@ -42,10 +41,9 @@ class CoordinationService{
     }
     list = async (number:string = '')=>{
        let query = {} 
-    //    if(number) query['number'] = RegExp('^'+number+'$','i')
-       if(number) query['number'] = /z/
-       console.log(query)
-       return await coordinationDb.find(query).sort({"createdAt.$$date":-1})
+       if(number) query['number'] = eval(`/${number}/`)
+       let res = await coordinationDb.find(query)
+       return  res
     }
     del = async (id:string)=>{
        return  await coordinationDb.remove({"_id": id},{multi:false})
@@ -104,4 +102,4 @@ class CoordinationService{
     
 }
 
-export default new CoordinationService()
+export default CoordinationService
