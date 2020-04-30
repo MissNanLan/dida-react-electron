@@ -54,9 +54,9 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
           .validateFields()
           .then(values => {
             form.resetFields();
-            values.requireReplyTime? values.requireReplyTime = values.requireReplyTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
-            values.receiveTime? values.receiveTime = values.receiveTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
-            values.replyReceiveTime? values.replyReceiveTime = values.replyReceiveTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
+            values.requireReplyTime? values.requireReplyTime = values.requireReplyTime.format('YYYY-MM-DD HH:mm:ss') : ''
+            values.receiveTime? values.receiveTime = values.receiveTime.format('YYYY-MM-DD HH:mm:ss') : ''
+            values.replyReceiveTime? values.replyReceiveTime = values.replyReceiveTime.format('YYYY-MM-DD HH:mm:ss') : ''
             onCreate('',values as Values);
           })
           .catch(info => {
@@ -170,7 +170,7 @@ const Coordination = () => {
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [current,setCurrent] = useState(1)
-  const [pageSize,setPageSize] = useState(10)
+  const [pageSize,setPageSize] = useState(8)
   const [visible, setVisible] = useState(false);
   const [selectRow,setSelectRow] = useState([])
 
@@ -189,9 +189,9 @@ const Coordination = () => {
     const {requireReplyTime,receiveTime,replyReceiveTime} = record
     form.setFieldsValue({
       ...record,
-      requireReplyTime:moment(requireReplyTime,'YYYY年MM月DD日 HH:mm:ss'),
-      receiveTime:moment(receiveTime,'YYYY年MM月DD日 HH:mm:ss'),
-      replyReceiveTime:moment(replyReceiveTime,'YYYY年MM月DD日 HH:mm:ss')
+      requireReplyTime:moment(requireReplyTime,'YYYY-MM-DD HH:mm:ss'),
+      receiveTime:moment(receiveTime,'YYYY-MM-DD HH:mm:ss'),
+      replyReceiveTime:moment(replyReceiveTime,'YYYY-MM-DD HH:mm:ss')
     });
     setEditingKey(record._id);
   };
@@ -204,9 +204,9 @@ const Coordination = () => {
     try {
         await form.validateFields().then(values => {
         form.resetFields();
-        values.requireReplyTime? values.requireReplyTime = values.requireReplyTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
-        values.receiveTime? values.receiveTime = values.receiveTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
-        values.replyReceiveTime? values.replyReceiveTime = values.replyReceiveTime.format('YYYY年MM月DD日 HH:mm:ss') : ''
+        values.requireReplyTime? values.requireReplyTime = values.requireReplyTime.format('YYYY-MM-DD HH:mm:ss') : ''
+        values.receiveTime? values.receiveTime = values.receiveTime.format('YYYY-MM-DD HH:mm:ss') : ''
+        values.replyReceiveTime? values.replyReceiveTime = values.replyReceiveTime.format('YYYY-MM-DD HH:mm:ss') : ''
         onCreate(record._id,values);
         setEditingKey('');
       })
@@ -235,7 +235,10 @@ const Coordination = () => {
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectRow(selectedRows)
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    }
+    },
+    fixed:true,
+    columnWidth:22
+
   };
   const download = ()=>{
     if(selectRow.length>0){
@@ -264,7 +267,7 @@ const Coordination = () => {
   const columns = [
     {
         title: '序号',
-        width: 50,
+        width: 35,
         render:(text,record,index)=>`${((current-1)*10)+(index+1)}`,
         dataIndex:'_id',
         fixed: 'left',
@@ -272,62 +275,62 @@ const Coordination = () => {
     {
       title: '协查编号',
       dataIndex: 'number',
-      width: 180,
+      width: 125,
       editable: true,
       fixed: 'left',
     },
     {
         title: '问题类型',
         dataIndex: 'type',
-        width: 150,
+        width: 60,
         editable: true,
     },
     {
         title: '涉及纳税人',
         dataIndex: 'taxpayer',
-        width: 200,
+        width: 120,
         editable: true,
     },
     {
         title: '转办部门',
         dataIndex: 'department',
-        width: 100,
+        width: 60,
         editable: true,
     },
     {
         title: '要求回函时间',
         dataIndex: 'requireReplyTime',
-        width: 190,
+        width: 70,
         editable: true,
     },
     {
         title: '接收人',
         dataIndex: 'receiver',
-        width: 80,
+        width: 50,
         editable: true,
     },
     {
         title: '接收时间',
         dataIndex: 'receiveTime',
-        width: 190,
+        width: 70,
         editable: true,
     },
     {
         title: '回函接收人',
         dataIndex: 'replyReceiver',
-        width: 80,
+        width: 65,
         editable: true,
     },
     {
         title: '接收时间',
         dataIndex: 'replyReceiveTime',
-        width: 190,
+        width: 70,
         editable: true
     },
     {
       title: '操作',
       dataIndex: '_id',
-      width: 90,
+      width: 52,
       fixed: 'right',
       render: (id, record) => {
         const editable = isEditing(record);
@@ -347,14 +350,14 @@ const Coordination = () => {
           </span>
         ) : (
           <span>
-            <Button type="link" size="small" disabled={editingKey !== ''} onClick={()=>edit(record)}>
-              <FormOutlined />
-            </Button>
-            <Popconfirm title="确定删除?" onConfirm={()=>del(id)}  okText="确认" cancelText="取消">
-              <Button type="link"size="small" >
-                <DeleteOutlined />
+              <Button type="link" size="small" disabled={editingKey !== ''} onClick={()=>edit(record)}>
+                <FormOutlined />
               </Button>
-            </Popconfirm>
+              <Popconfirm title="确定删除?" onConfirm={()=>del(id)}  okText="确认" cancelText="取消">
+                <Button type="link"size="small" >
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
           </span>
         );
       },
@@ -390,24 +393,20 @@ const Coordination = () => {
               onSearch={value => search(value)}
             />
           </Col>
+          <Col className="gutter-row" span={7}>
+            <Button type="primary" onClick={() => {setVisible(true);}}>
+              <PlusOutlined />
+              新增
+            </Button>
+            <Button  style={{marginLeft:'8px'}} onClick={() => {download();}}>
+            <DownloadOutlined />
+            导出
+          </Button>
+          </Col>
         </Row>
       </SearchBox>
-      <FeatureBox>
-        <Button type="primary" onClick={() => {setVisible(true);}}>
-          <PlusOutlined />
-          新增
-        </Button>
-        <Button  style={{marginLeft:'8px'}} onClick={() => {download();}}>
-          <DownloadOutlined />
-          导出
-        </Button>
-      </FeatureBox>
+   
         <Form form={form} component={false}>
-        {/* <div style={{margin:16}}>
-          <Button type="primary" onClick={() => {setVisible(true);}}>
-            <PlusOutlined />增加
-          </Button>
-        </div> */}
         <Table
           components={{
             body: {
@@ -431,7 +430,7 @@ const Coordination = () => {
           style={{width:'100%'}}
           rowKey="_id"
           size="small"
-          scroll={{ x: 1800, y: 628 }} 
+          scroll={{ x: 1180, y: 628 }} 
         />
         <CollectionCreateForm
           visible={visible}

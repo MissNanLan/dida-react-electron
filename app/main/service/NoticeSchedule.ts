@@ -2,7 +2,7 @@ import schedule from 'node-schedule';
 import electron from 'electron';
 import { ipcMain } from 'electron';
 
-const { ipcRenderer,BrowserWindow } = electron;
+const {BrowserWindow } = electron;
 
 export interface NoticeDto{
     _id :string
@@ -43,11 +43,11 @@ class NoticeSchedule{
             case 0: // 一次
                 return date
             case 1: // 每天
-                return `${s} ${m} ${h} ${d}/1 * ?`
+                return `${s} ${m} ${h} 1-31 * ?`
             case 2: // 每周
-                return `${s} ${m} ${h} ? * ${week + 1}`
+                return `${s} ${m} ${h} ? * ${week}`
             case 3: // 每月
-                return `${s} ${m} ${h} ${d} ${M}/1 ?`
+                return `${s} ${m} ${h} ${d} 1-12 ?`
             default:
                 return '';
         }

@@ -22,8 +22,8 @@ class CaseManageService {
      list = async (keyword:string)=>{
         let query = {} 
         if(keyword) query['caseName'] = eval(`/${keyword}/`)
-        let arr =  await caseManageDb.find(query).sort({'createdAt.$$date':-1})
-         return arr
+        let arr =  await caseManageDb.find(query).sort({'createdAt':-1})
+        return arr
      }
      del = async (id:string)=>{
         return  await caseManageDb.remove({"_id": id},{multi:false})

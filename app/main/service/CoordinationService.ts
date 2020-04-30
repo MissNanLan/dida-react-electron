@@ -50,12 +50,13 @@ class CoordinationService{
 
 
     insert = async (doc:CoordPO)=>{
+        // doc['ctime']= new Date()
        return await coordinationDb.insert(doc)
     }
     list = async (number:string = '')=>{
        let query = {} 
        if(number) query['number'] = eval(`/${number}/`)
-       let res = await coordinationDb.find(query)
+       let res = await coordinationDb.find(query).sort({'createdAt':-1})
        return  res
     }
     del = async (id:string)=>{
@@ -73,36 +74,6 @@ class CoordinationService{
             selectRow = await this.list() as CoordPO[]
         }
         excelUtils.json2ExcelAndDownload(selectRow,path.filePath,excleFields,excleTitles,excelColStype)
-    }
-    _createWs = (data:CoordPO[],fields:string[],titles:any)=>{
-        const ws = XLSX.utils.json_to_sheet(data, { header: fields})
-        const range = XLSX.utils.decode_range(ws['!ref'] as string)
-
-        for(let c = range.s.c; c <= range.e.c; c++) {
-            let col = XLSX.utils.encode_col(c)
-            const header = col + '1'
-            if(!titles[ ws[header].v ]){
-                for(let d = 1 ;d<=range.e.r+1;d++){
-                    delete ws[''+col+d]
-                }
-                continue
-            }
-            ws[header].v = titles[ ws[header].v ]
-        }
-        return ws
-    }
-    _handleWsStyle = (sheet:XLSX.WorkSheet)=>{
-        sheet["!cols"] =[
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-        ]
     }
 
     

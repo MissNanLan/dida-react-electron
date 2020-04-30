@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Table, Input, Button, Row, Col, Modal, Tooltip } from 'antd';
+import { Table, Input, Button, Row, Col, Modal, Tooltip,Popconfirm } from 'antd';
 import {
   PlusOutlined,
   FormOutlined,
   DeleteOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined ,
+  DownloadOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -52,6 +53,11 @@ export default function CaseManage(props: Props) {
       key: 'caseName'
     },
     {
+      title: '案件类型',
+      dataIndex: 'caseType',
+      key: 'caseType'
+    },
+    {
       title: '主查员',
       dataIndex: 'primaryChecker',
       key: 'primaryChecker'
@@ -72,6 +78,11 @@ export default function CaseManage(props: Props) {
       dataIndex: 'checkDate'
     },
     {
+      title: '金三初次送审日期',
+      key: 'jinsanDate',
+      dataIndex: 'jinsanDate'
+    },
+    {
       title: '结案日',
       key: 'closingDate',
       dataIndex: 'closingDate'
@@ -89,54 +100,56 @@ export default function CaseManage(props: Props) {
           </Tooltip>
 
           <Tooltip placement="bottom" title="删除">
-            <Button type="link" size="small" onClick={() => delCase(id)}>
-              <DeleteOutlined />
-            </Button>
+            <Popconfirm title="确定删除?" onConfirm={()=>delCase(id)}  okText="确认" cancelText="取消">
+              <Button type="link"size="small" >
+                <DeleteOutlined />
+              </Button>
+            </Popconfirm>
           </Tooltip>
         </div>
       )
     }
   ];
-  const childRef = useRef();
+  const childRef : any = useRef();
   let _childRef = childRef.current;
 
   const saveCase = () => {
     if (_childRef) {
       _childRef.value.validateFields().then(values => {
-        values.closingDate
-          ? (values.closingDate = values.closingDate.format(
-              'YYYY-MM-DD HH:mm:ss'
-            ))
-          : '';
+        values.closingDate ? (values.closingDate = values.closingDate.format('YYYY-MM-DD')): '';
+        values.jinsanDate ? (values.jinsanDate = values.jinsanDate.format('YYYY-MM-DD')):''
         updateCasedb(id, values as CaseItemType);
       });
     }
   };
 
   const editCase = (id, data) => {
-    let { closingDate } = data;
+    let { closingDate,jinsanDate } = data;
     setCaseId(id);
     setVisible(true);
     if (_childRef) {
       _childRef.value.resetFields();
       _childRef.value.setFieldsValue({
         ...data,
-        closingDate: moment(closingDate, 'YYYY-MM-DD HH:mm:ss')
+        closingDate: moment(closingDate, 'YYYY-MM-DD'),
+        jinsanDate: moment(jinsanDate,'YYYY-MM-DD')
       });
     }
   };
 
   const delCase = async id => {
-    confirm({
-      title: '你确定删除吗',
-      icon: <ExclamationCircleOutlined />,
-      onOk: async () => {
-        await servcie.del(id);
-        await list(caseName);
-        setVisible(false);
-      },
-      onCancel() {}
-    });
+    await servcie.del(id);
+    await list(caseName);
+    // confirm({
+    //   title: '你确定删除吗',
+    //   icon: <ExclamationCircleOutlined />,
+    //   onOk: async () => {
+    //     await servcie.del(id);
+    //     await list(caseName);
+    //     setVisible(false);
+    //   },
+    //   onCancel() {}
+    // });
   };
 
   const updateCasedb = async (id: string, values: CaseItemType) => {
@@ -154,7 +167,7 @@ export default function CaseManage(props: Props) {
     setVisible(true);
     setCaseId('');
     if (_childRef) {
-      _childRef.value.resetFields();
+        _childRef.value.resetFields();
     }
   };
 
@@ -172,38 +185,15 @@ export default function CaseManage(props: Props) {
     updateCase(caseList);
   };
 
-//   const list1 =  (keyword:string)=>{
-//     return new Promise((resolve,reject)=>{
-//       const reg =  new RegExp(`${keyword}`, "i");
-//       caseManageDb.find({ caseName: 'ar' }, function (err, docs) {
-//          if(err){
-//           reject(err)
-//          }else {
-//            resolve(docs)
-//          }
-//       });
-//     })
-//  }
-  const data = [
-    // {
-    //   key: '1',
-    //   caseName: '案件名称',
-    //   primaryChecker: '蒋小姐',
-    //   viceChecker: '石先生',
-    //   interrogator: '胖胖',
-    //   checkDate: '2020-04-13',
-    //   colsingDate: '2020-04-13'
-    // },
-    // {
-    //   key: '2',
-    //   caseName: '案件名称',
-    //   primaryChecker: '蒋小姐',
-    //   viceChecker: '石先生',
-    //   interrogator: '胖胖',
-    //   checkDate: '2020-04-13',
-    //   colsingDate: '2020-04-13'
-    // }
-  ];
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      // setSelectRow(selectedRows)
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    fixed:true,
+    columnWidth:22
+
+  };
 
   return (
     <CaseManageWrapper>
@@ -212,17 +202,22 @@ export default function CaseManage(props: Props) {
           <Col className="gutter-row" span={7}>
           <Search
               placeholder="请输入案件名称"
+              enterButton="搜索"
               onSearch={value => onSearch(value)}
             />
           </Col>
+          <Col className="gutter-row" span={7}>
+            <Button type="primary" onClick={() => addCase()}>
+              <PlusOutlined />
+              新增
+            </Button>
+            <Button  style={{marginLeft:'8px'}} onClick={() => {/*download();*/}}>
+            <DownloadOutlined />
+            导出
+          </Button>
+          </Col>
         </Row>
       </SearchBox>
-      <FeatureBox>
-        <Button type="primary" onClick={() => addCase()}>
-          <PlusOutlined />
-          增加
-        </Button>
-      </FeatureBox>
       <Modal
         title="新增案件"
         visible={visible}
@@ -233,7 +228,7 @@ export default function CaseManage(props: Props) {
       >
         <CaseManageModal ref={childRef}></CaseManageModal>
       </Modal>
-      <Table columns={columns} dataSource={caseList} rowKey='_id' bordered  size="small"/>
+      <Table columns={columns} dataSource={caseList} rowKey='_id' bordered  size="small" rowSelection={rowSelection}/>
     </CaseManageWrapper>
   );
 }

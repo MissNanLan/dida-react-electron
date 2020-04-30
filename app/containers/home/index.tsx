@@ -249,16 +249,16 @@ const Home = () => {
       <FeatureBox>
         <Button type="primary" onClick={() => {setVisible(true);}}>
           <PlusOutlined />
-          增加
+          新增
         </Button>
-        <Button type="primary" onClick={() => {
+        {/* <Button type="primary" onClick={() => {
           noticeService.notice(JSON.stringify({noticeTitle:'标题',noticeContent:'内容',closeTime:0.5}));}}>
           <PlusOutlined />
           弹窗
-        </Button>
+        </Button> */}
       </FeatureBox>
      
-      <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" />
+      <Table columns={columns} rowKey='_id' dataSource={dataSource} size="small" bordered />
       <CollectionCreateForm visible={visible} onCreate={onCreate} onCancel={() => {setVisible(false);setFormData(null);}} 
         formData={formData}
       />
