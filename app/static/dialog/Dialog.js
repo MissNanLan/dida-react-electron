@@ -8,6 +8,7 @@ import { PlusOutlined} from '@ant-design/icons';
 const { Title, Paragraph, Text } = Typography;
 
 const DialogWindow = ()=>{
+  
   const [message, setMessage] = useState('');
   
   useEffect(()=>{

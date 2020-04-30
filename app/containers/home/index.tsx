@@ -37,12 +37,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   useEffect(() => {
     if (formData) {
       form.setFieldsValue({
-        _id: formData._id,
-        noticeTime: moment(formData.noticeTime),
-        noticeType: formData.noticeType,
-        closeTime: formData.closeTime,
-        noticeTitle: formData.noticeTitle,
-        noticeContent: formData.noticeContent
+        ...formData
       });
     }
     return () => {
@@ -63,8 +58,9 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         form
           .validateFields()
           .then(values => {
-            form.resetFields();
+            values.noticeTime = values.noticeTime.toDate()
             onCreate(values as Values);
+            form.resetFields();
           })
           .catch(info => {
             console.log('Validate Failed:', info);
@@ -77,13 +73,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         name="form_in_modal"
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }}
-        initialValues={{
-          noticeTime: moment(),
-          noticeType: 0,
-          closeTime: 20,
-          noticeTitle: '',
-          noticeContent: ''
-        }}
+        initialValues={{noticeType:0,closeTime:0,noticeTime:moment()}}
       >
         <Form.Item label="id" name="_id" style={{ display: 'none' }}>
           <Input />
@@ -115,12 +105,12 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             style={{ width: '100%' }}
           />
         </Form.Item>
-        <Form.Item label="关闭窗口">
+        {/* <Form.Item label="关闭窗口">
           <Form.Item name="closeTime" noStyle>
-            <InputNumber min={1} max={60} />
+            <InputNumber min={0} max={60} />
           </Form.Item>
-          <span className="ant-form-text"> 分</span>
-        </Form.Item>
+          <span className="ant-form-text"> 分(0从不关闭)</span>
+        </Form.Item> */}
 
         <Form.Item
           label="提醒标题"
@@ -194,7 +184,10 @@ const Home = () => {
 
   const edit = async data => {
     setVisible(true);
-    setFormData(data);
+    setFormData({
+      ...data,
+      noticeTime:moment(data.noticeTime)
+    });
   };
 
   const del = async id => {

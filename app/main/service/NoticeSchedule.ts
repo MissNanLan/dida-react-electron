@@ -1,7 +1,8 @@
 import schedule from 'node-schedule';
 import electron from 'electron';
+import { ipcMain } from 'electron';
 
-const { ipcRenderer } = electron;
+const { ipcRenderer,BrowserWindow } = electron;
 
 export interface NoticeDto{
     _id :string
@@ -9,15 +10,17 @@ export interface NoticeDto{
     noticeTitle: string,
     noticeContent: string,
     noticeType: number,
-    closeTime: number,
+    // closeTime: number,
 }
 
 class NoticeSchedule{
 
     _jobStore = {}
+
     // 创建通知
     batchCreateNotice = (noticeList:NoticeDto[])=>{
-        noticeList.forEach(notice=>{this.createNotice(notice)})
+        const now = new Date()
+        noticeList.filter(it=>it.noticeTime>=now).forEach(notice=>{this.createNotice(notice)})
     }
     createNotice = (notice:NoticeDto)=>{
         let corn = this._convertDate2Corn(notice.noticeTime, notice.noticeType);
@@ -52,7 +55,47 @@ class NoticeSchedule{
 
      // 具体通知内容
      _doNotice = (notice:NoticeDto|any = null) => {
-        ipcRenderer.send('create-notice-window', notice);
+        let win : electron.BrowserWindow|null= new BrowserWindow({
+            width: 500,
+            height: 400,
+            webPreferences:{
+                nodeIntegration:true
+            },
+            autoHideMenuBar:true,
+            focusable:true
+        })
+        win.focus()
+       
+        let proUrl = `file://${__dirname}/dist/dialog/index.html`
+        let devUrl = `http://localhost:9000/dialog/index.html`
+        let url = `${process.env.NODE_ENV === 'development' ?devUrl:proUrl}`
+        win.loadURL(url);
+        win.on('close', () => { win = null })
+        win.webContents.on('did-finish-load', function(){
+            if(win) win.webContents.send('dataJsonPort', notice);
+        });
+        // win.webContents.openDevTools()
+        ipcMain.on('noticeReply',(e,reply)=>{
+            console.log(reply)
+            console.log(this._jobStore)
+            let id = reply['_id']
+            if(!id) return
+            let later = reply['later']
+            let job = this._jobStore[id]
+            if(job){
+                if(later == 0 ){
+                    job.cancel()
+                }else{
+                    var newDate=new Date();
+                    newDate.setMinutes(newDate.getMinutes()+later)
+                    job.reschedule(newDate)
+                }
+            }
+            if(win){
+                win.close()
+            }
+        })
+       
     }
 
     delNotice = async(id:string)=>{

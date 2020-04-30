@@ -5,5 +5,5 @@ export const HomeWrapper = styled.div`
 `;
 
 export const FeatureBox = styled.div`
-   padding: 32px 16px;
+   padding: 16px 16px;
 `;

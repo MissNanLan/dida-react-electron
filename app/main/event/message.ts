@@ -26,11 +26,6 @@ export default class MessageBuilder{
                 focusable:true
             })
             let win:BrowserWindow|null = this.noticeWindow
-            // url.format({
-            //     pathname: path.join(__dirname, '/dist/index.html'),
-            //     protocol: 'file:',
-            //     slashes: true
-            // })
             win.on('close', () => { win = null })
             let proUrl = `file://${__dirname}/dist/dialog/index.html`
             let devUrl = `http://localhost:9000/dialog/index.html`
@@ -49,5 +44,6 @@ export default class MessageBuilder{
             this.noticeWindow = null;
         })
     }
+    
     
 }
