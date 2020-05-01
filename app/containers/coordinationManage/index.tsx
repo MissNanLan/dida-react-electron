@@ -430,7 +430,7 @@ const Coordination = () => {
           style={{width:'100%'}}
           rowKey="_id"
           size="small"
-          scroll={{ x: 1180, y: 628 }} 
+          scroll={{ x: 1100, y: 628 }} 
         />
         <CollectionCreateForm
           visible={visible}

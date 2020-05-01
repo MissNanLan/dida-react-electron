@@ -4,23 +4,16 @@ import {
   PlusOutlined,
   FormOutlined,
   DeleteOutlined,
-  ExclamationCircleOutlined ,
-  DownloadOutlined
+  DownloadOutlined,
+  QuestionCircleOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
-
-import { CaseManageWrapper, SearchBox, FeatureBox } from './style';
+import electron from 'electron';
+import { CaseManageWrapper, SearchBox } from './style';
 import CaseManageModal from './components/CaseManageModal';
 
-import electron from 'electron';
-const servcie = electron.remote.getGlobal('caseManageService')
+const servcie = electron.remote.getGlobal('caseManageService');
 
-
-// import electron from 'electron';
-// import Datastore from 'nedb-promises';
-
-// const db = electron.remote.getGlobal('db')
-// const caseManageDb:Datastore = db.case
 
 type Props = {
   updateCase: (params) => void;
@@ -45,6 +38,7 @@ export default function CaseManage(props: Props) {
   const [visible, setVisible] = useState(false);
   const [id, setCaseId] = useState('');
   const [caseName, setSearchName] = useState('');
+  const [selectRow,setSelectRow] = useState([])
 
   const columns = [
     {
@@ -91,7 +85,7 @@ export default function CaseManage(props: Props) {
       title: '操作',
       dataIndex: '_id',
       key: '_id',
-      render: (id, data) => (
+      render: (id: any, data: any) => (
         <div>
           <Tooltip placement="bottom" title="编辑">
             <Button type="link" size="small" onClick={() => editCase(id, data)}>
@@ -167,7 +161,7 @@ export default function CaseManage(props: Props) {
     setVisible(true);
     setCaseId('');
     if (_childRef) {
-        _childRef.value.resetFields();
+      _childRef.value.resetFields();
     }
   };
 
@@ -187,13 +181,32 @@ export default function CaseManage(props: Props) {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      // setSelectRow(selectedRows)
+      setSelectRow(selectedRows)
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
     },
     fixed:true,
     columnWidth:22
 
   };
+  const download = ()=>{
+    if(selectRow.length>0){
+      doDownlod(false)
+      return    
+    }
+    confirm({
+      title: '确认导出全部数据?',
+      icon: <QuestionCircleOutlined />,
+      onOk() {
+        doDownlod(true)
+      },
+      onCancel() {
+        
+      },
+    })
+  }
+  const doDownlod= async (isAll:Boolean)=>{
+      await servcie.downlod(selectRow,isAll)
+  }
 
   return (
     <CaseManageWrapper>
@@ -211,7 +224,7 @@ export default function CaseManage(props: Props) {
               <PlusOutlined />
               新增
             </Button>
-            <Button  style={{marginLeft:'8px'}} onClick={() => {/*download();*/}}>
+            <Button  style={{marginLeft:'8px'}} onClick={() => {download();}}>
             <DownloadOutlined />
             导出
           </Button>

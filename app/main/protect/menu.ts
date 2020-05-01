@@ -4,7 +4,8 @@ import {
   Menu,
   shell,
   BrowserWindow,
-  MenuItemConstructorOptions
+  MenuItemConstructorOptions,
+  dialog 
 } from 'electron';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
@@ -214,58 +215,64 @@ export default class MenuBuilder {
                   openAtLogin: !app.getLoginItemSettings().openAtLogin
                 })
               }
-              console.log(app.getLoginItemSettings().openAtLogin)
-              console.log(!app.isPackaged);
-      
             }
           },
           {
             type : 'checkbox',
             label: '显示菜单栏',
+            accelerator: 'F10',
             checked : this.mainWindow.isMenuBarVisible(),
             click : function () {
               if(!mainWindow.isMenuBarVisible()){
                 mainWindow.setMenuBarVisibility(true)
               }else{
                 mainWindow.setMenuBarVisibility(false)
-              
               }
-              console.log(mainWindow.isMenuBarVisible())
+            }
+          }, 
+          {
+            type: 'separator'
+          },
+          {
+            label: '退出', click: () => {
+              mainWindow.destroy();
+              app.quit();
             }
           }
         ]
       },
       {
-        label: '&View',
+        label: '&视图',
         submenu:
-          process.env.NODE_ENV === 'development' ||
-          process.env.DEBUG_PROD === 'true'
-            ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  }
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(
-                      !this.mainWindow.isFullScreen()
-                    );
-                  }
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.webContents.toggleDevTools();
-                  }
-                }
-              ]
-            : [
+          // process.env.NODE_ENV === 'development' ||
+          // process.env.DEBUG_PROD === 'true'
+          //   ? [
+          //       {
+          //         label: '&Reload',
+          //         accelerator: 'Ctrl+R',
+          //         click: () => {
+          //           this.mainWindow.webContents.reload();
+          //         }
+          //       },
+          //       {
+          //         label: 'Toggle &Full Screen',
+          //         accelerator: 'F11',
+          //         click: () => {
+          //           this.mainWindow.setFullScreen(
+          //             !this.mainWindow.isFullScreen()
+          //           );
+          //         }
+          //       },
+          //       {
+          //         label: 'Toggle &Developer Tools',
+          //         accelerator: 'Alt+Ctrl+I',
+          //         click: () => {
+          //           this.mainWindow.webContents.toggleDevTools();
+          //         }
+          //       }
+          //     ]
+          //   :
+             [
                 {
                   label: '全屏',
                   accelerator: 'F11',
@@ -280,26 +287,29 @@ export default class MenuBuilder {
       {
         label: '帮助',
         submenu: [
+          // {
+          //   label: '使用介绍',
+          //   click() {
+          //     dialog.showMessageBoxSync(mainWindow,{
+          //       icon:'resources/icon.ico',
+          //       title:'使用介绍',
+          //       message:'稽查小组首'
+          //     })
+          //   }
+          // },
           {
-            label: '关于',
+            label: '声明',
             click() {
-              shell.openExternal('https://electronjs.org');
-            }
-          },
-          {
-            label: '使用介绍',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/master/docs#readme'
-              );
-            }
-          },
-          {
-            label: '免责声明',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/master/docs#readme'
-              );
+              dialog.showMessageBoxSync(mainWindow,{
+                title:'声明',
+                message:`
+              1.本软件(稽查小助手)非商业用途，不得未经作者授权进行修改、发售;
+              2.任何因软件使用导致的损失，与作者无关;
+              3.本软件所有存储资料均位于/resources/data目录下，无任何联网功能;
+              4.本软件所有字体、图标、如有侵权，请联系作者删除;
+              4.未明示授权的一切权利归作者所有，用户使用其他权利时必须获得作者的书面同意。
+                `
+              })
             }
           }
         ]
