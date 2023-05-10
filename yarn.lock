@@ -6253,10 +6253,10 @@ electron-updater@^4.2.0:
     pako "^1.0.10"
     semver "^6.3.0"
 
-electron@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-8.2.1.tgz#0341ea01272a69f4f3a2bd4cb41521adb1e4ddcf"
-  integrity sha1-A0HqAScqafTzor1MtBUhrbHk3c8=
+electron@7.1.13:
+  version "7.1.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-7.1.13.tgz#f98838de70d74890cf639bbbbbe1f3b4b341ae78"
+  integrity sha512-WFfjhAG/B2iVjZcGoQkwkn/Zf1YN3U5Ux/hTcnANRiM6qPMAX23CINQC+vhlHspcjM9/jbF310fHCSrsXMGlAg==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
@@ -8097,9 +8097,9 @@ htmlparser2@^3.10.0, htmlparser2@^3.9.1:
     readable-stream "^3.1.1"
 
 http-cache-semantics@^4.0.0:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.0.3.tgz#495704773277eeef6e43f9ab2c2c7d259dda25c5"
-  integrity sha512-TcIMG3qeVLgDr1TEd2XvHaTnMPwYQUQMIBLy+5pLSDKYFc7UIqj39w8EGzZkaxoLv/l2K8HaI0t5AVA+YYgUew==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.1.tgz#abe02fcb2985460bf0323be664436ec3476a6d5a"
+  integrity sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==
 
 http-deceiver@^1.2.7:
   version "1.2.7"
