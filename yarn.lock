@@ -5633,9 +5633,9 @@ decamelize@^1.1.0, decamelize@^1.1.1, decamelize@^1.1.2, decamelize@^1.2.0:
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 decompress-response@^3.3.0:
   version "3.3.0"
@@ -6253,10 +6253,10 @@ electron-updater@^4.2.0:
     pako "^1.0.10"
     semver "^6.3.0"
 
-electron@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-8.2.1.tgz#0341ea01272a69f4f3a2bd4cb41521adb1e4ddcf"
-  integrity sha1-A0HqAScqafTzor1MtBUhrbHk3c8=
+electron@7.1.13:
+  version "7.1.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-7.1.13.tgz#f98838de70d74890cf639bbbbbe1f3b4b341ae78"
+  integrity sha512-WFfjhAG/B2iVjZcGoQkwkn/Zf1YN3U5Ux/hTcnANRiM6qPMAX23CINQC+vhlHspcjM9/jbF310fHCSrsXMGlAg==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
