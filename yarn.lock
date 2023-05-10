@@ -6253,10 +6253,10 @@ electron-updater@^4.2.0:
     pako "^1.0.10"
     semver "^6.3.0"
 
-electron@^8.2.1:
-  version "8.2.1"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-8.2.1.tgz#0341ea01272a69f4f3a2bd4cb41521adb1e4ddcf"
-  integrity sha1-A0HqAScqafTzor1MtBUhrbHk3c8=
+electron@7.1.13:
+  version "7.1.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-7.1.13.tgz#f98838de70d74890cf639bbbbbe1f3b4b341ae78"
+  integrity sha512-WFfjhAG/B2iVjZcGoQkwkn/Zf1YN3U5Ux/hTcnANRiM6qPMAX23CINQC+vhlHspcjM9/jbF310fHCSrsXMGlAg==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
@@ -12372,9 +12372,9 @@ qs@6.7.0:
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
 qs@~6.5.2:
-  version "6.5.2"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
-  integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.3.tgz#3aeeffc91967ef6e35c0e488ef46fb296ab76aad"
+  integrity sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==
 
 query-string@^4.1.0:
   version "4.3.4"
